@@ -1,0 +1,39 @@
+{{/*
+
+markdown render hook for images, with auto-resizing disabled v2020-04-26
+
+*/}}
+
+
+{{ $src := .Page.Resources.GetMatch .Destination }}
+{{ $alt := .PlainText | safeHTML }}
+{{ $caption := "" }}
+{{ with .Title }}
+  {{ $caption = . | safeHTML }}
+{{ end }}
+
+<p>
+	<figure class="figure"
+					{{with $alt }}
+					{{ $desc := anchorize . }}
+					{{ $words := split $desc "-" }}
+					id="{{index $words 0 }}-figure"
+					{{ end }}>
+		<a href="{{ $src.RelPermalink }}">
+			<img
+					sizes="(min-width: 35em) 1200px, 100vw"
+
+					{{/* if image smaller than 800, then load the image itself */}}
+					{{ if ge $src.Width "800" }}src="{{ ($src.Resize "800x").RelPermalink }}"
+					{{ else }}src="{{ $src.RelPermalink }}"
+					{{ end }}
+
+					alt="{{ if $alt }}{{ $alt }}{{ else if $caption }}{{ $caption | markdownify | plainify }}{{ else }}&nbsp;{{ end }}"
+					loading="lazy"
+				/>
+		</a>
+		{{ with $caption }}
+			<figcaption>{{ . | markdownify | humanize }}</figcaption>
+		{{ end }}
+	</figure>
+</p>

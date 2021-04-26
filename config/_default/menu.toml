@@ -1,0 +1,23 @@
+[[ main ]]
+  name = "Home"
+  pre = "home"
+  url = "/"
+  weight = 1
+[[ main ]]
+  name = "Blog"
+  pre = "edit"
+  url = "/blog/"
+  weight = 2
+[[ main ]]
+  name = "Tags"
+  pre = "tag"
+  url = "/tags/"
+  weight = 3
+[[ main ]]
+  name = "Teaching"
+  pre = "bar-chart-2"
+  url = "/teaching/"
+  weight = 4
+
+# See <https://feathericons.com/>
+# The value of pre is the icon name

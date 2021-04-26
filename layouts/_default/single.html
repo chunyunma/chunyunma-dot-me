@@ -1,0 +1,8 @@
+{{ define "main" }}
+
+<h1>{{ .Title }}</h1>
+{{ partial "date-and-tags.html" . }}{{ if gt .Lastmod .PublishDate }}, updated {{ .Lastmod.Format "2006-01-02" }}{{ end }}
+<br><br>
+{{ .Content }}
+
+{{ end }}

@@ -1,0 +1,54 @@
+<style>
+.container {
+  max-width: {{ .Site.Params.containerMaxWidth | default "700px" | safeCSS }};
+}
+#nav a {
+  font-weight: bold;
+  color: inherit;
+}
+#nav-border {
+  border-bottom: 1px solid #212529;
+}
+#main {
+  margin-top: 1em;
+  margin-bottom: 4em;
+}
+#home-jumbotron {
+  background-color: inherit;
+}
+.font-125 {
+  font-size: 125%;
+}
+.tag-btn {
+  margin-bottom: 0.3em;
+}
+img {
+  max-width: 100%;
+}
+
+/* Apply counters to headings */
+
+body {counter-reset: h2}
+h2 {counter-reset: h3}
+h3 {counter-reset: h4}
+h4 {counter-reset: h5}
+
+article[autonumbering] h2::before {counter-increment: h2; content: counter(h2) " "}
+article[autonumbering] h3::before {counter-increment: h3; content: counter(h2) "." counter(h3) " "}
+article[autonumbering] h4::before {counter-increment: h4; content: counter(h2) "." counter(h3) "." counter(h4) " "}
+article[autonumbering] h5::before {counter-increment: h5; content: counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) " "}
+
+article {counter-reset: figures}
+
+.figure figcaption {
+	counter-increment: figures;
+}
+
+.figure figcaption::before {
+	content: 'Figure ' counter(figures) '. ';
+}
+
+article[autonumbering] .toc__menu ul { counter-reset: item }
+article[autonumbering] .toc__menu li a::before { content: counters(item, ".") " "; counter-increment: item }
+
+</style>

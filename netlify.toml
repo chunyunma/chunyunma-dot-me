@@ -4,7 +4,7 @@
 
 [build.environment]
   HUGO_VERSION = "0.82.1"
-  HUGO_BASEURL = "https://make-a-hugo-blog-from-scratch.netlify.app"
+  HUGO_BASEURL = "https://chunyunma.me"
 
 [[headers]]
   for = "/*"

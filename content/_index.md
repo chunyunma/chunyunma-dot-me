@@ -7,7 +7,7 @@ draft: false
 
 Welcome to my online home.
 
-If you landed here for the course notes of CGSC5101/HCIN 5400, 
+If you landed here for the course notes of CGSC 5101/HCIN 5400, 
 please look under the **Teaching** tab.
 
 

@@ -37,7 +37,7 @@ I can finally claim this property mine.
 Of course, having a blog made from scratch does not guarantee that it will not be deserted. 
 In fact, I have come across too many blogs that also appear to be made from scratch 
 and yet have not had entries for over a year. 
-That's why I am also setting up some ground rules from myself.
+That's why I am also setting up some ground rules for myself.
 
 ## Extrinsic versus intrinsic motivation
 

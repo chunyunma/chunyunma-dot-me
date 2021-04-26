@@ -13,6 +13,6 @@
 
 [[redirects]]
 	from = "/teaching/*"
-	to = "https://chunyunma.me/:splat"
+	to = "https://confident-ramanujan-5a911b.netlify.app/:splat"
 	status = 200
 	force = true

@@ -9,4 +9,6 @@
   <title>{{ $title }}</title>
   {{ partial "style.html" .}}
   {{ partial "mathjax_support.html" . }}
+  <!-- math typesetting using katex, not preferable -->
+  <!-- {{ if .Params.math }}{{ partial "katex.html" . }}{{ end }} -->
 </head>

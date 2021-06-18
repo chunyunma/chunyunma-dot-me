@@ -1,0 +1,162 @@
+---
+slug: "svd"
+title: "Singular Value Decomposition"
+date: 2021-06-18T09:35:51-04:00 
+publishdate: 2021-06-18
+lastmod: 2021-06-18
+tags: []
+draft: false
+autonumbering: true
+output: 
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(echo=F, message=F, fig.path = "", comment = "")
+
+# Knitr hook to use Hugo markdown render image
+knitr::knit_hooks$set(plot = function(x,options) {
+      base = knitr::opts_knit$get('base.url')
+      if (is.null(base)) base = ''
+      alt = ifelse (is.null(options$alt),"",options$alt)
+      cap = ifelse (is.null(options$caption),"",options$caption)
+      if (alt != ""){
+        sprintf('![%s](%s%s "%s")', alt, base, x, cap)
+      } else {
+        sprintf('![%s](%s%s)', cap, base, x)  
+        }
+  })
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+To understand SVD, we need to first understand the *Eigenvalue Decomposition* of a matrix.
+We can think of a matrix $A$ as a transformation that acts on a vector $X$ 
+by multiplication to produce a new vector $Ax$. 
+
+For example, the rotation matrix in a 2-$d$ space can be defined as:
+
+$$
+\mathbf{A} = 
+\begin{bmatrix}
+  \cos(\theta) & -\sin(\theta) \\
+  \sin(\theta) & \cos(\theta) \\
+\end{bmatrix}
+$$ 
+
+This matrix rotates a vector about the origin by $\theta$. 
+
+Another example is the stretching matrix $\mathbf{B}$ in a 2-$d$ space: 
+
+$$
+\mathbf{B} = 
+\begin{bmatrix}
+  k & 0  \\
+  0 & 1  \\
+\end{bmatrix}
+$$ 
+This matrix stretches a vector along the $x$-axis by a constant factor $k$ 
+but does not affect it in the $y$-direction. 
+Similarly, we can have a stretching matrix in $y$-direction.
+
+$$
+\mathbf{C} = 
+\begin{bmatrix}
+  1 & 0  \\
+  0 & k  \\
+\end{bmatrix}
+$$ 
+As an example, if we have a vector
+
+$$
+\mathbf{x} = 
+\begin{bmatrix}
+  1 \\
+  0 \\
+\end{bmatrix}
+$$ 
+
+then $y = \mathbf{A}\mathbf{x}$ is the resulting vector 
+after rotating $\mathbf{x}$ by $\theta$, 
+and $\mathbf{B}\mathbf{x}$ is the resulting vector 
+after stretching $\mathbf{x}$ in the $x$-direction by a constant factor $k$.
+
+```{r load-packages, include=FALSE}
+if (!requireNamespace("xfun")) install.packages("xfun")
+xfun::pkg_load2("matlib") # matrix algebra functions
+```
+
+```{r}
+vec <- c(1, 0) # original vector
+theta <- 30 * pi / 180 # 30 degrees in radian
+# rotation matrix for theta = 30 degrees
+mat_rotate <- matrix(c(cos(theta), sin(theta), -sin(theta), cos(theta)), 2)
+# stretching matrix
+mat_stretch <- matrix(c(3, 0, 0, 1), 2)
+# vec_rotate is the rotated vector
+vec_rotate <- as.vector(mat_rotate %*% vec)
+# vec_stretch is the stretched vector
+vec_stretch <- as.vector(mat_stretch %*% vec)
+
+# prepare the canvas
+# split the canvas to left and right, 1 row by 2 columns
+par(mfrow = c(1, 2))
+# define the dimensions of canvas
+xlim <- c(-0.5, 4)
+ylim <- c(-1.5, 1.5)
+
+# plot original and rotated vectors
+# axis labels and plot title
+plot(xlim, ylim, type = "n", xlab = "x", ylab = "y",
+     main = "Rotation transform", asp = 1)
+# reference line
+abline(v = 0, h = 0, col = "gray")
+grid()
+# add vectors to plot
+matlib::vectors(rbind(vec, vec_rotate),
+                col = c("blue", "green"),
+                lwd = c(2, 2),
+                angle = 30,
+                labels = c("x", "Ax"),
+                cex.lab = c(2, 2)
+)
+
+# plot original and stretched vectors
+plot(xlim, ylim, type = "n", xlab = "x", ylab = "y",
+     main = "Stretching transform", asp = 1)
+abline(v = 0, h = 0, col = "gray")
+grid()
+matlib::vectors(rbind(vec, vec_stretch),
+                col = c("blue", "green"),
+                lwd = c(2, 2),
+                angle = 30,
+                labels = c("x", "Bx"),
+                cex.lab = c(2, 2)
+                )
+
+# restore canvas parameters to default
+par(mfrow = c(1, 1))
+```
+
+Here the rotation matrix is calculated for $\theta = 30^{\circ}$ 
+and in the stretching matrix $k = 3$. 

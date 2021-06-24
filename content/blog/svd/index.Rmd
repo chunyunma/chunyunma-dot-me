@@ -106,7 +106,10 @@ if (!requireNamespace("xfun")) install.packages("xfun")
 xfun::pkg_load2("matlib") # matrix algebra functions
 ```
 
-```{r}
+<!-- Thu, 2021-06-24T11:17:29-0400 -->
+<!-- Not sure how to adjust the size of figures -->
+
+```{r rotate-and-strech, class="figure", caption="A vector transformed by rotation (left) and stretching (right)", alt="vectors and transformed vectors"}
 vec <- c(1, 0) # original vector
 theta <- 30 * pi / 180 # 30 degrees in radian
 # rotation matrix for theta = 30 degrees

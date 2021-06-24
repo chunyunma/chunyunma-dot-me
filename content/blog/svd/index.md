@@ -67,7 +67,7 @@ after stretching $\mathbf{x}$ in the $x$-direction by a constant factor $k$.
 
 
 
-![](unnamed-chunk-1-1.png)
+![vectors and transformed vectors](rotate-and-strech-1.png "A vector transformed by rotation (left) and stretching (right)")
 
 Here the rotation matrix is calculated for $\theta = 30^{\circ}$ 
 and in the stretching matrix $k = 3$. 

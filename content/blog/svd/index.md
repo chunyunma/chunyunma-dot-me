@@ -67,6 +67,9 @@ after stretching $\mathbf{x}$ in the $x$-direction by a constant factor $k$.
 
 
 
+<!-- Thu, 2021-06-24T11:17:29-0400 -->
+<!-- Not sure how to adjust the size of figures -->
+
 ![vectors and transformed vectors](rotate-and-strech-1.png "A vector transformed by rotation (left) and stretching (right)")
 
 Here the rotation matrix is calculated for $\theta = 30^{\circ}$ 

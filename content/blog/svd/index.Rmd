@@ -115,18 +115,24 @@ theta <- 30 * pi / 180 # 30 degrees in radian
 # rotation matrix for theta = 30 degrees
 mat_rotate <- matrix(c(cos(theta), sin(theta), -sin(theta), cos(theta)), 2)
 # stretching matrix
-mat_stretch <- matrix(c(3, 0, 0, 1), 2)
+mat_stretch <- matrix(c(2, 0, 0, 1), 2)
 # vec_rotate is the rotated vector
 vec_rotate <- as.vector(mat_rotate %*% vec)
 # vec_stretch is the stretched vector
 vec_stretch <- as.vector(mat_stretch %*% vec)
 
 # prepare the canvas
-# split the canvas to left and right, 1 row by 2 columns
-par(mfrow = c(1, 2))
+# split the canvas into left and right, 1 row by 2 columns,
+# with different widths
+layout(mat = matrix(c(1, 2),
+                    nrow = 1,
+                    ncol = 2),
+       heights = 1,
+       widths = c(1, 1.5))
+
 # define the dimensions of canvas
-xlim <- c(-0.5, 4)
-ylim <- c(-1.5, 1.5)
+xlim <- c(-0.5, 1.5)
+ylim <- c(-0.5, 1)
 
 # plot original and rotated vectors
 # axis labels and plot title
@@ -145,6 +151,8 @@ matlib::vectors(rbind(vec, vec_rotate),
 )
 
 # plot original and stretched vectors
+# redefine the x-dimension of canvas
+xlim <- c(-0.5, 3)
 plot(xlim, ylim, type = "n", xlab = "x", ylab = "y",
      main = "Stretching transform", asp = 1)
 abline(v = 0, h = 0, col = "gray")
@@ -156,10 +164,7 @@ matlib::vectors(rbind(vec, vec_stretch),
                 labels = c("x", "Bx"),
                 cex.lab = c(2, 2)
                 )
-
-# restore canvas parameters to default
-par(mfrow = c(1, 1))
 ```
 
 Here the rotation matrix is calculated for $\theta = 30^{\circ}$ 
-and in the stretching matrix $k = 3$. 
+and in the stretching matrix $k = 2$. 

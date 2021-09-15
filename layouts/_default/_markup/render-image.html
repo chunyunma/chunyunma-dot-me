@@ -15,14 +15,14 @@ further simplified v2021-06-25
 
 <p>
 	<figure class="figure"
-			{{with $alt }}
-			{{ $desc := anchorize . }}
-			{{ $words := split $desc "-" }}
-			id="{{index $words 0 }}-figure"
-			{{ end }}>
+          {{with $alt }}
+          {{ $desc := anchorize . }}
+          {{ $words := split $desc "-" }}
+          id="{{index $words 0 }}-figure"
+          {{ end }}>
 		<a href="{{ $src.RelPermalink }}">
 			<img
-					src="{{ $src.RelPermalink }}"
+          src="{{ $src.RelPermalink }}"
 					alt="{{ if $alt }}{{ $alt }}{{ else if $caption }}{{ $caption | markdownify | plainify }}{{ else }}&nbsp;{{ end }}"
 					loading="lazy"
 				/>

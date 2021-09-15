@@ -1,6 +1,7 @@
 {{/*
 
-markdown render hook for images, with auto-resizing disabled v2020-04-26
+markdown render hook for images, with auto-resizing disabled v2021-04-26
+further simplified v2021-06-25
 
 */}}
 
@@ -14,20 +15,14 @@ markdown render hook for images, with auto-resizing disabled v2020-04-26
 
 <p>
 	<figure class="figure"
-					{{with $alt }}
-					{{ $desc := anchorize . }}
-					{{ $words := split $desc "-" }}
-					id="{{index $words 0 }}-figure"
-					{{ end }}>
+			{{with $alt }}
+			{{ $desc := anchorize . }}
+			{{ $words := split $desc "-" }}
+			id="{{index $words 0 }}-figure"
+			{{ end }}>
 		<a href="{{ $src.RelPermalink }}">
 			<img
-					sizes="(min-width: 35em) 1200px, 100vw"
-
-					{{/* if image smaller than 800, then load the image itself */}}
-					{{ if ge $src.Width "800" }}src="{{ ($src.Resize "800x").RelPermalink }}"
-					{{ else }}src="{{ $src.RelPermalink }}"
-					{{ end }}
-
+					src="{{ $src.RelPermalink }}"
 					alt="{{ if $alt }}{{ $alt }}{{ else if $caption }}{{ $caption | markdownify | plainify }}{{ else }}&nbsp;{{ end }}"
 					loading="lazy"
 				/>

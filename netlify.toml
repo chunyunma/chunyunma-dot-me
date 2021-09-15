@@ -16,3 +16,9 @@
 	to = "https://confident-ramanujan-5a911b.netlify.app/:splat"
 	status = 200
 	force = true
+
+[[redirects]]
+	from = "/about-me/*"
+	to = "https://chunyunma-resume.netlify.app/:splat"
+	status = 200
+	force = true

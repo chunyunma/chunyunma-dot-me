@@ -23,8 +23,8 @@ For example, the rotation matrix in a 2-$d$ space can be defined as:
 $$
 \mathbf{A} = 
 \begin{bmatrix}
-  \cos(\theta) & -\sin(\theta) \\
-  \sin(\theta) & \cos(\theta) \\
+  \cos(\theta) & -\sin(\theta) \\\\
+  \sin(\theta) & \cos(\theta) \\\\
 \end{bmatrix}
 $$ 
 
@@ -66,6 +66,9 @@ and $\mathbf{B}\mathbf{x}$ is the resulting vector
 after stretching $\mathbf{x}$ in the $x$-direction by a constant factor $k$.
 
 
+
+<!-- Thu, 2021-06-24T11:17:29-0400 -->
+<!-- Not sure how to adjust the size of figures -->
 
 ![vectors and transformed vectors](rotate-and-strech-1.png "A vector transformed by rotation (left) and stretching (right)")
 

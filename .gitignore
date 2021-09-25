@@ -4,3 +4,5 @@ local_git_config.sh
 **/renv
 _tmp/
 resources/
+**/.Renviron
+

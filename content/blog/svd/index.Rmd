@@ -3,7 +3,7 @@ slug: "svd"
 title: "Singular Value Decomposition"
 date: 2021-06-18T09:35:51-04:00 
 publishdate: 2021-06-18
-lastmod: "2021-09-25"
+lastmod: "`r format(Sys.time(), '%Y-%m-%d')`"
 tags: ["matrix"]
 draft: false
 autonumbering: true
@@ -46,7 +46,46 @@ You can find the original article by Reza Bagheri
 
 ## Introduction
 
-
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(
+  echo=F,
+  message=F,
+  fig.show = "hold",
+  fig.path = "",
+  comment = "")
+# Knitr hook to use Hugo markdown render image
+knitr::knit_hooks$set(plot = function(x,options) {
+      base = knitr::opts_knit$get('base.url')
+      if (is.null(base)) base = ''
+      alt = ifelse (is.null(options$alt),"",options$alt)
+      cap = ifelse (is.null(options$caption),"",options$caption)
+      if (alt != ""){
+        sprintf('![%s](%s%s "%s")', alt, base, x, cap)
+      } else {
+        sprintf('![%s](%s%s)', cap, base, x)  
+        }
+  })
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
 
 To understand singular value decomposition,
 we need to first understand the *Eigenvalue Decomposition* of a matrix.
@@ -58,8 +97,8 @@ For example, the rotation matrix $\mathbf{A}$ in a 2-$d$ space can be defined as
 $$
 \mathbf{A} = 
 \begin{bmatrix}
-  \cos(\theta) & -\sin(\theta) \\\\
-  \sin(\theta) & \cos(\theta) \\\\
+  \cos(\theta) & -\sin(\theta) \\
+  \sin(\theta) & \cos(\theta) \\
 \end{bmatrix}
 $$ 
 
@@ -70,8 +109,8 @@ Another example is the stretching matrix $\mathbf{B}$ in a 2-$d$ space:
 $$
 \mathbf{B} = 
 \begin{bmatrix}
-  k & 0  \\\\
-  0 & 1  \\\\
+  k & 0  \\
+  0 & 1  \\
 \end{bmatrix}
 $$ 
 This matrix stretches a vector along the $x$-axis by a constant factor $k$ 
@@ -81,8 +120,8 @@ Similarly, we can have a stretching matrix in $y$-direction.
 $$
 \mathbf{C} = 
 \begin{bmatrix}
-  1 & 0  \\\\
-  0 & k  \\\\
+  1 & 0  \\
+  0 & k  \\
 \end{bmatrix}
 $$ 
 As an example, if we have a vector
@@ -90,8 +129,8 @@ As an example, if we have a vector
 $$
 \mathbf{x} = 
 \begin{bmatrix}
-  1 \\\\
-  0 \\\\
+  1 \\
+  0 \\
 \end{bmatrix}
 $$ 
 
@@ -100,12 +139,15 @@ after rotating $\mathbf{x}$ by $\theta$,
 and $\mathbf{B}\mathbf{x}$ is the resulting vector 
 after stretching $\mathbf{x}$ in the $x$-direction by a constant factor $k$.
 
-
+```{r load-packages, include=FALSE}
+if (!requireNamespace("xfun")) install.packages("xfun")
+xfun::pkg_load2("matlib") # matrix algebra functions
+```
 
 <!-- Thu, 2021-06-24T11:17:29-0400 -->
 <!-- Not sure how to adjust the size of figures -->
 
-```r 
+```{r rotate-and-strech, echo=TRUE, class="figure", caption="A vector transformed by rotation (left) and stretching (right)", alt="vectors and transformed vectors"}
 vec <- c(1, 0) # original vector
 theta <- 30 * pi / 180 # 30 degrees in radian
 # rotation matrix for theta = 30 degrees
@@ -158,7 +200,6 @@ matlib::vectors(rbind(vec, vec_stretch),
                 cex.lab = c(2, 2)
                 )
 ```
-![vectors and transformed vectors](rotate-and-strech-1.png "A vector transformed by rotation (left) and stretching (right)")
 
 In Figure [1](#vectors-figure) the rotation matrix is calculated for $\theta = 30^{\circ}$ 
 and the stretching matrix for $k = 2$.
@@ -169,8 +210,8 @@ Suppose that
 $$
 \mathbf{A} = 
 \begin{bmatrix}
-  3 & 2 \\\\
-  0 & 2 \\\\
+  3 & 2 \\
+  0 & 2 \\
 \end{bmatrix}
 $$ 
 
@@ -180,8 +221,8 @@ we apply it to a set of vectors $\mathbb{X}$ that meet the general form of
 $$
 \mathbf{x} = 
 \begin{bmatrix}
-  x_i \\\\
-  y_i \\\\
+  x_i \\
+  y_i \\
 \end{bmatrix}
 \text{where } x_i^2 + y_i^2 = 1
 $$ 
@@ -195,7 +236,7 @@ Figure [2](#circle-figure) shows the set of $\mathbb{X}$ and $\mathbb{T}$
 and the effect of transforming two sample vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ 
 in $\mathbb{X}$.
 
-```r {linenos=table}
+```{r circle-transform, class="figure", echo=TRUE, hlopts=list(linenos="table"), caption="A circle (left) and a ellipse after transformation (right)", alt="circle and ellipse"}
 xi_pos <- seq(from = -1, to = 1, by = 0.01) # top half circle
 xi_neg <- seq(from = 1, to = -1, by = -0.01) # bottom half circle
 vec_stack <- rbind(cbind(
@@ -255,12 +296,11 @@ matlib::vectors(rbind(t_sample1, t_sample2),
 # restore default parameter of canvas
 par(mfrow = c(1, 1))
 ```
-![circle and ellipse](circle-transform-1.png "A circle (left) and a ellipse after transformation (right)")
 
 A word about line 40 in the previous chunk
 where each vector on the circle was transformed:
 
-```r {linenos=table,linenostart=40}
+```{r echo=TRUE, eval=FALSE, hlopts=list(linenos="table", linenostart=40)}
 vec_stack_trans <- t(apply(vec_stack, MARGIN = 1, FUN = `%*%`, t(mat_trans)))
 ```
 
@@ -274,8 +314,8 @@ The initial vectors in $\mathbb{X}$ on the left side form a circle,
 but the transformation matrix
 $$
 \begin{bmatrix}
-  3 & 2 \\\\
-  0 & 2 \\\\
+  3 & 2 \\
+  0 & 2 \\
 \end{bmatrix}
 $$
 turned it into an ellipse.
@@ -284,7 +324,7 @@ The sample vectors $\mathbf{x}_1$ and $\mathbf{x}_2$ in the circle are transform
 into $\mathbf{t}_1$ and $\mathbf{t}_2$ respectively. So:
 $$
 \begin{align}
-  \mathbf{t}_1 = \mathbf{A}\mathbf{x}_1 \\\\
+  \mathbf{t}_1 = \mathbf{A}\mathbf{x}_1 \\
   \mathbf{t}_2 = \mathbf{A}\mathbf{x}_2
 \end{align}
 $$ 

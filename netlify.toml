@@ -22,3 +22,10 @@
 	to = "https://chunyunma-resume.netlify.app/:splat"
 	status = 200
 	force = true
+
+[[redirects]]
+	from = "/onion/*"
+	to = "https://onion-book.netlify.app/:splat"
+	status = 200
+	force = true
+

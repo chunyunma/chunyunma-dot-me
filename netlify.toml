@@ -29,3 +29,9 @@
 	status = 200
 	force = true
 
+[[redirects]]
+	from = "/onion/*"
+	to = "https://micro-course.netlify.app/:splat"
+	status = 200
+	force = true
+

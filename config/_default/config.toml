@@ -3,6 +3,7 @@ languageCode = "en-us"
 title = "Chunyun's sandbox"
 ignoreFiles = [ "\\.Rmd$", "_files$", "_cache$", "index\\.html", "renv", 
 		"\\.Rprofile$", "\\.Renviron$", "renv.lock", "_tmp$"]
+relativeURLs = true
 
 [permalinks]
   blog = "/:year/:month/:day/:slug/"

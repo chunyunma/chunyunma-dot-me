@@ -1,4 +1,4 @@
-baseURL = "http://example.org/"
+baseURL = "https://chunyunma.me/"
 languageCode = "en-us"
 title = "Chunyun's sandbox"
 ignoreFiles = [ "\\.Rmd$", "_files$", "_cache$", "index\\.html", "renv", 

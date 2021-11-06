@@ -5,3 +5,7 @@
 
 Based on [Make a Hugo blog from scratch](https://zwbetz.com/make-a-hugo-blog-from-scratch/).
 
+## TODOs
+
+[ ] Add a footer
+

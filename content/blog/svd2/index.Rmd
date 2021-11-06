@@ -1,0 +1,246 @@
+---
+slug: "svd2"
+title: "Singular Value Decomposition -- Eigenvalue"
+date: 2021-11-06
+publishdate: 2021-11-06
+lastmod: "`r format(Sys.time(), '%Y-%m-%d')`"
+tags: ["matrix"]
+draft: false
+autonumbering: true
+output:
+  html_document:
+    keep_md: true
+---
+
+In a previous [post]({{< relref "../svd/index.md" >}}),
+I described matrix as a transformation mapped onto one or multiple vectors.
+In this sequel, we continue building the foundation that leads to
+Singular Value Decomposition.
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable symbols before output
+knitr::opts_chunk$set(
+  echo=F,
+  message=F,
+  fig.show = "hold",
+  fig.path = "",
+  comment = "")
+# Knitr hook to use Hugo markdown render image
+knitr::knit_hooks$set(plot = function(x,options) {
+      base = knitr::opts_knit$get('base.url')
+      if (is.null(base)) base = ''
+      alt = ifelse (is.null(options$alt),"",options$alt)
+      cap = ifelse (is.null(options$caption),"",options$caption)
+      if (alt != ""){
+        sprintf('![%s](%s%s "%s")', alt, base, x, cap)
+      } else {
+        sprintf('![%s](%s%s)', cap, base, x)  
+        }
+  })
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+## Eigenvalues and Eigenvectors
+
+```{r circle-transform, class="figure", hlopts=list(linenos="table"), caption="A circle (left) and a ellipse after transformation (right), as seen in the previous post.", alt="circle and ellipse"}
+xi_pos <- seq(from = -1, to = 1, by = 0.01) # top half circle
+xi_neg <- seq(from = 1, to = -1, by = -0.01) # bottom half circle
+vec_stack <- rbind(
+  cbind(
+    xi_pos,
+    yi = sqrt(1 - xi_pos**2)
+  ),
+  cbind(
+    xi_neg,
+    yi = -sqrt(1 - xi_neg**2)
+  )
+)
+
+x_sample1 <- vec_stack[135, ]
+x_sample2 <- vec_stack[201, ]
+
+# prepare the canvas
+# evenly split the canvas into left and right
+par(mfrow = c(1, 2))
+
+xlim <- c(-4, 4)
+ylim <- c(-4, 4)
+plot(xlim, ylim, type = "n", xlab = "x", ylab = "y", main = "original vectors", asp = 1)
+abline(v = 0, h = 0, col = "gray")
+grid()
+# draw the circle
+lines(x = vec_stack[, 1], y = vec_stack[, 2], col = "blue")
+# draw two vectors x1 and x2
+matlib::vectors(
+  rbind(x_sample1, x_sample2),
+  col = c("blue", "red"),
+  lwd = c(2, 2),
+  angle = 30,
+  labels = c(expression(x[1]), expression(x[2]))
+)
+
+# transformation matrix
+mat_trans <- matrix(c(3, 0, 2, 2), 2)
+
+# multiply mat_trans with each vector from vec_stack,
+# effectively transforming the circule represented by vec_stack
+# Not a transparent solution, to optimize [TODO]
+vec_stack_trans <- t(apply(vec_stack, MARGIN = 1, FUN = `%*%`, t(mat_trans)))
+
+t_sample1 <- vec_stack_trans[135, ]
+t_sample2 <- vec_stack_trans[201, ]
+
+plot(xlim, ylim, type = "n", xlab = "x", ylab = "y", main = "New vectors after transformation", asp = 1)
+abline(v = 0, h = 0, col = "gray")
+grid()
+lines(x = vec_stack_trans[, 1], y = vec_stack_trans[, 2], col = "blue")
+matlib::vectors(
+  rbind(t_sample1, t_sample2),
+  col = c("blue", "red"),
+  lwd = c(2, 2),
+  angle = 30,
+  labels = c(expression(t[1]), expression(t[2]))
+)
+
+# restore default parameter of canvas
+par(mfrow = c(1, 1))
+```
+
+A vector is an entity which has both magnitude and direction. 
+The general effect of matrix $\mathbf{A}$ on a vectors in $\mathbb{X}$ 
+is a combination of stretching and rotation.
+For example, in Figure [1](#circle-figure),
+matrix $\mathbf{A}$ changed both direction and magnitude of vector $\mathbf{x}_1$,
+which resulted in the transformed vector $\mathbf{t}_1$. 
+However, for vector $\mathbf{x}_2$, only its magnitude changed after transformation. 
+$\mathbf{x}_2$ and $\mathbf{t}_2$ have the same direction. 
+Matrix $\mathbf{A}$ only stretched $\mathbf{x}_2$ in the same direction 
+and returned vector $\mathbf{t}_2$ which has a bigger magnitude. 
+
+The only way to change the magnitude of a vector without changing its direction 
+is by multiplying it with a scalar. 
+For example, we have a vector $\mathbf{u}$ and a scalar quantity $\lambda$, 
+then $\lambda\mathbf{u}$ has the same direction and a different magnitude as $\mathbf{u}$.
+For a vector like $\mathbf{x}_2$ in Figure [1](#circle-figure),
+the effect of multiplying by $\mathbf{A}$
+is like multiplying it with a scalar quantity $\lambda$.
+
+$$
+\mathbf{t}_2 = \mathbf{A}\mathbf{x}_2 = \lambda\mathbf{x}_2
+$$ 
+
+This is not universally true for all vectors in $\mathbb{X}$. 
+In fact, for a given matrix $\mathbf{A}$,
+only some vectors in $\mathbb{X}$ have this property. 
+These special vectors are called the **eigenvectors** of matrix $\mathbf{A}$
+and their corresponding scalar quantity $\lambda$ is called
+an **eigenvalue** of matrix $\mathbf{A}$ for that eigenvector. 
+The eigenvector of an $n \times n$ matrix $\mathbf{A}$ is defined as a nonzero vector
+$\mathbf{u}$ such that:
+
+$$
+\mathbf{A}\mathbf{u} = \lambda\mathbf{u}
+$$ 
+
+where $\lambda$ is a scalar and is called the eigenvalue of $\mathbf{A}$, 
+and $\mathbf{u}$ is the eigenvector corresponding to $\lambda$. 
+In addition, if you have any other vectors in the form of $a\mathbf{u}$ 
+where $a$ is a scalar, 
+then by placing it in the previous equation we get:
+$$
+\mathbf{A}(a\mathbf{u}) = a\mathbf{A}\mathbf{u} = a\lambda\mathbf{u} = \lambda(a\mathbf{u})
+$$ 
+
+which means that any vector which has the same direction as the eigenvector $\mathbf{u}$ 
+(or the opposite direction if $a$ is negative) is also an eigenvector 
+with the same corresponding eigenvalue. 
+For example, the eigenvalues of 
+$$
+\mathbf{B} = 
+\begin{bmatrix}
+  -1 & 1 \\
+  0 & -2 \\
+\end{bmatrix}
+$$ 
+are $\lambda_1 = -1$ and $\lambda_2 = -2$ and their corresponding eigenvectors are:
+
+$$
+\mathbf{u}_1 = 
+\begin{bmatrix}
+  1 \\
+  0 \\
+\end{bmatrix}
+$$
+
+$$
+\mathbf{u}_2 = 
+\begin{bmatrix}
+  -1 \\
+  1 \\
+\end{bmatrix}
+$$ 
+
+and we have:
+
+$$
+\begin{align}
+\mathbf{B}{\mathbf{u}}_1 = \lambda_1{\mathbf{u}}_1 \\
+\mathbf{B}{\mathbf{u}}_2 = \lambda_2{\mathbf{u}}_2
+\end{align}
+$$
+
+This means that when we apply matrix $\mathbf{B}$ to all the possible vectors, 
+it does not change the direction of two vectors --- $\mathbf{u}_1$ and $\mathbf{u}_2$
+(or any vectors which have the same or opposite direction) ---
+but only stretches them. 
+For eigenvectors, matrix multiplication turns into a simple scalar multiplication.
+
+Next, we calculate eigenvalues and eigenvectors of $\mathbf{B}$ using `R`.
+
+```{r eigen, echo=TRUE}
+# target matrix
+mat_b <- matrix(c(-1, 0, 1, -2), 2)
+# calculate eigenvalues and eigenvectors for `mat_b`
+eigen_b <- eigen(mat_b)
+eigen_b
+```
+
+We used function `eigen()` from base `R` to calculate the eigenvalues and eigenvectors. 
+It returned a `list.` 
+The first element of this list is a vector that stores the eigenvalues. 
+The second element is a matrix that stores the corresponding eigenvectors. 
+
+Note that the eigenvector for ${\lambda}_2 = -1$ is the same as ${\mathbf{u}}_2$, 
+
+$$
+\begin{bmatrix}
+  1 \\
+  0 \\
+\end{bmatrix}
+$$
+
+but the eigenvector for ${\lambda}_1 = -2$ is different from ${\mathbf{u}}_1$. 
+That is because `eigen()` returns the *normalized* eigenvector.
+A normalized vector is a unit vector whose magnitude is 1. 
+Before explaining how the magnitude of a vector can be calculated, 
+we need to learn the transpose of a matrix and the dot product,
+which will be the topic of my next post.
+

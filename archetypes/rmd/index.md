@@ -5,12 +5,11 @@ date: {{ .Date }}
 publishdate: {{ now.Format "2006-01-02" }}
 lastmod: {{ now.Format "2006-01-02" }}
 tags: []
-draft: true
+draft: false
 autonumbering: true
 output:
-  md_document:
-    variant: markdown
-    preserve_yaml: FALSE
+  html_document:
+    keep_md: true
 ---
 
 Use `hugo new --kind rmd blog/<YYYY-MM-DD-slug>` to create a new post(leaf) bundle.

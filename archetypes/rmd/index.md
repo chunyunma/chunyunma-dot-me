@@ -1,6 +1,6 @@
 ---
-slug: "post-template"
-title: "{{ replace .Name "-" " " | title }}"
+slug: "{{ replace .Name "-" " " | title }}"
+title: "post-template"
 date: {{ .Date }} 
 publishdate: {{ now.Format "2006-01-02" }}
 lastmod: {{ now.Format "2006-01-02" }}
@@ -11,12 +11,6 @@ output:
   html_document:
     keep_md: true
 ---
-
-Use `hugo new --kind rmd blog/<YYYY-MM-DD-slug>` to create a new post(leaf) bundle.
-
-Throughout this template, including the YAML, 
-you should change "post-template" to the slug of your post.
-
 
 ```{r setup, include=FALSE}
 # Options to have images saved in the post folder
@@ -55,6 +49,11 @@ knitr::knit_hooks$set(
   }
 )
 ```
+
+Use `hugo new --kind rmd blog/<YYYY-MM-DD-slug>` to create a new post(leaf) bundle.
+
+Throughout this template, including the YAML, 
+you should change "post-template" to the title of your post.
 
 The figure paths in the resulting Markdown will already be valid so you won't need to edit the Markdown file.
 

@@ -2,7 +2,7 @@
 slug: "Svd4"
 title: "Singular Value Decomposition - Eigenvectors of A Symmetric Matrix"
 date: 2021-11-07T17:41:05-05:00 
-publishdate: 2021-11-07
+publishdate: 2021-11-08
 lastmod: 2021-11-07
 tags: ["matrix"]
 draft: false

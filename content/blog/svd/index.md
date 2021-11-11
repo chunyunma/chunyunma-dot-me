@@ -1,6 +1,6 @@
 ---
 slug: "svd"
-title: "Singular Value Decomposition -- Intro"
+title: "Singular Value Decomposition - Intro"
 date: 2021-06-18T09:35:51-04:00 
 publishdate: 2021-06-18
 lastmod: "2021-11-06"

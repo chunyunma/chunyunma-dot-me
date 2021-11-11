@@ -1,6 +1,6 @@
 ---
 slug: "svd2"
-title: "Singular Value Decomposition -- Eigenvalue"
+title: "Singular Value Decomposition - Eigenvalue"
 date: 2021-11-06
 publishdate: 2021-11-06
 lastmod: "2021-11-06"
@@ -24,7 +24,7 @@ Singular Value Decomposition.
 ![circle and ellipse](circle-transform-1.png "A circle (left) and a ellipse after transformation (right), as seen in the previous post.")
 
 A vector is an entity which has both magnitude and direction. 
-The general effect of matrix $\mathbf{A}$ on a vectors in $\mathbb{X}$ 
+The general effect of matrix $\mathbf{A}$ on a vector in $\mathbb{X}$ 
 is a combination of stretching and rotation.
 For example, in Figure [1](#circle-figure),
 matrix $\mathbf{A}$ changed both direction and magnitude of vector $\mathbf{x}_1$,
@@ -150,7 +150,7 @@ $$
 but the eigenvector for ${\lambda}_1 = -2$ is different from ${\mathbf{u}}_1$. 
 That is because `eigen()` returns the *normalized* eigenvector.
 A normalized vector is a unit vector whose magnitude is 1. 
-Before explaining how the magnitude of a vector can be calculated, 
+Before explaining how to calculate the magnitude of a vector, 
 we need to learn the transpose of a matrix and the dot product,
 which will be the topic of my next post.
 

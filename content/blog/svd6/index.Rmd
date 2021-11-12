@@ -1,0 +1,254 @@
+---
+slug: "svd6"
+title: "Singular Value Decomposition - Properties of Symmetric Matrices"
+date: 2021-11-12T12:31:00-05:00 
+publishdate: 2021-11-13
+lastmod: 2021-11-13
+tags: ["matrix"]
+draft: false
+autonumbering: true
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable comment symbols before each line of output
+knitr::opts_chunk$set(message=F, fig.path = "", comment = "")
+
+# Knitr hook to use Hugo markdown render image
+knitr::knit_hooks$set(plot = function(x,options) {
+      base = knitr::opts_knit$get('base.url')
+      if (is.null(base)) base = ''
+      alt = ifelse (is.null(options$alt),"",options$alt)
+      cap = ifelse (is.null(options$caption),"",options$caption)
+      if (alt != ""){
+        sprintf('![%s](%s%s "%s")', alt, base, x, cap)
+      } else {
+        sprintf('![%s](%s%s)', cap, base, x)  
+        }
+  })
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue('{names(hlopts)}={hlopts}'),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+In a previous [post]({{< relref "../svd4/index.md" >}}),
+you have seen that the eigenvectors of a symmetric matrix
+are perpendicular to each other.
+This is not a coincidence and is an important property of symmetric matrices.
+
+An important property of symmetric matrices is that
+an $n \times n$ symmetric matrix has $n$ linearly independent
+and orthogonal eigenvectors,
+and it has $n$ real eigenvalues corresponding to those eigenvectors.
+It is important to note that these eigenvalues are not necessarily unique;
+some of them can be identical.
+Another important property of symmetric matrices is that
+they are orthogonally diagonalizable.
+Next, let's unpack **orthogonally diagonalizable**.
+
+## Eigendecomposition
+
+A symmetric matrix is orthogonally diagonalizable.
+It means that for an $n \times n$ symmetric matrix $\mathbf{A}$,
+we can decompose it as
+
+$$
+\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^\top
+$$ 
+
+in which $\mathbf{D}$ is an $n \times n$ diagonal matrix comprised of 
+the $n$ eigenvalues of $\mathbf{A}$ on its diagonal.
+$\mathbf{P}$ is also an $n \times n$ matrix, 
+and the columns of $\mathbf{P}$ are the $n$ linearly independent eigenvectors of $\mathbf{A}$ 
+that correspond to those eigenvalues in $\mathbf{D}$ respectively. 
+For example, if $\mathbf{u}_1, \mathbf{u}_2, \ldots, \mathbf{u}_n$ 
+are the eigenvectors of $\mathbf{A}$, and $\lambda_1, \lambda_2, \ldots, \lambda_n$ 
+are their corresponding eigenvalues, 
+then $\mathbf{A}$ can be written as
+
+$$
+\begin{equation*}
+  \mathbf{A} = 
+  \begin{bmatrix}
+    \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_n \\
+  \end{bmatrix}
+  \begin{bmatrix}
+    \lambda_1 & 0 & \ldots & 0 \\
+    0 & \lambda_2 & \ldots & 0 \\
+    \vdots & \vdots & \vdots & \vdots \\
+    0 & 0 & \ldots & \lambda_n \\
+  \end{bmatrix}
+  \begin{bmatrix}
+    \mathbf{u}_1 & \mathbf{u}_2 & \ldots & \mathbf{u}_n \\
+  \end{bmatrix}^\top
+\end{equation*}
+$$ 
+
+This can also be written as
+
+$$
+\begin{equation*}
+  \mathbf{A} = 
+  \begin{bmatrix}
+    \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_n \\
+  \end{bmatrix}
+  \begin{bmatrix}
+    \lambda_1 & 0 & \ldots & 0 \\
+    0 & \lambda_2 & \ldots & 0 \\
+    \vdots & \vdots & \vdots & \vdots \\
+    0 & 0 & \ldots & \lambda_n \\
+  \end{bmatrix}
+  \begin{bmatrix}
+    \mathbf{u}_1^\top \\
+    \mathbf{u}_2^\top \\
+    \ldots \\
+    \mathbf{u}_n^\top \\
+  \end{bmatrix}
+\end{equation*}
+$$ 
+
+
+This factorization of $\mathbf{A}$ is called the eigendecomposition of $\mathbf{A}$. 
+
+Let's see an example. Suppose that 
+
+$$
+\mathbf{A} = 
+\begin{bmatrix}
+  3 & 1 \\
+  1 & 2 \\
+\end{bmatrix}
+$$ 
+
+It has two eigenvectors: 
+
+```{r include=FALSE, results="hide"}
+mat_a <- matrix(c(3, 1, 1, 2), 2)
+eigen_a <- eigen(mat_a)
+eigen_a
+```
+
+$$
+\begin{equation*}
+\mathbf{u}_1 = 
+\begin{bmatrix}
+  `r eigen_a$vectors[1,1] |> round(2)` \\
+  `r eigen_a$vectors[2,1] |> round(2)` \\
+\end{bmatrix}~
+\mathbf{u}_2 = 
+\begin{bmatrix}
+  `r eigen_a$vectors[1,2] |> round(2)` \\
+  `r eigen_a$vectors[2,2] |> round(2)` \\
+\end{bmatrix}
+\end{equation*}
+$$ 
+
+and the corresponding eigenvalues are:
+
+$$
+\begin{equation*}
+\lambda_1 = `r eigen_a$values[1] |> round(2)`,~
+\lambda_2 = `r eigen_a$values[2] |> round(2)`
+\end{equation*}
+$$ 
+
+Therefore, $\mathbf{D}$ can be defined as
+
+$$
+\begin{equation*}
+  \mathbf{D} = 
+\begin{bmatrix}
+  \lambda_1 & 0 \\
+  0 & \lambda_2 \\
+\end{bmatrix} = 
+\begin{bmatrix}
+  `r eigen_a$values[1] |> round(2)` & 0 \\
+  0 & `r eigen_a$values[2] |> round(2)` \\
+\end{bmatrix}
+\end{equation*}
+$$ 
+
+Likewise, columns of $\mathbf{P}$ are the eigenvectors of $\mathbf{A}$
+corresponding to those eigenvalues in $\mathbf{D}$,
+
+$$
+\begin{equation*}
+  \mathbf{P} = 
+\begin{bmatrix}
+  \mathbf{u}_1 & \mathbf{u}_2  \\
+\end{bmatrix} = 
+\begin{bmatrix}
+  `r eigen_a$vectors[1, 1] |> round(2)` & `r eigen_a$vectors[1, 2] |> round(2)` \\
+  `r eigen_a$vectors[2, 1] |> round(2)` & `r eigen_a$vectors[2, 2] |> round(2)` \\
+\end{bmatrix}
+\end{equation*}
+$$ 
+
+The transpose of $\mathbf{P}$ is
+
+$$
+\begin{equation*}
+  \mathbf{P}^\top =
+\begin{bmatrix}
+  \mathbf{u}_1 & \mathbf{u}_2 \\
+\end{bmatrix}^\top = 
+\begin{bmatrix}
+  \mathbf{u}_1^\top \\
+  \mathbf{u}_2^\top \\
+\end{bmatrix} =
+\begin{bmatrix}
+  `r eigen_a$vectors[1, 1] |> round(2)` & `r eigen_a$vectors[2, 1] |> round(2)` \\
+  `r eigen_a$vectors[1, 2] |> round(2)` & `r eigen_a$vectors[2, 2] |> round(2)` \\
+\end{bmatrix}
+\end{equation*}
+$$ 
+
+And finally, barring some round error, $\mathbf{A}$ can be written as
+
+$$
+\begin{equation*}
+  \mathbf{A} = 
+\begin{bmatrix}
+  3 & 1 \\
+  1 & 2 \\
+\end{bmatrix} =
+\begin{bmatrix}
+  `r eigen_a$vectors[1, 1] |> round(2)` & `r eigen_a$vectors[1, 2] |> round(2)` \\
+  `r eigen_a$vectors[2, 1] |> round(2)` & `r eigen_a$vectors[2, 2] |> round(2)` \\
+\end{bmatrix}
+\begin{bmatrix}
+  `r eigen_a$values[1] |> round(2)` & 0 \\
+  0 & `r eigen_a$values[2] |> round(2)` \\
+\end{bmatrix}
+\begin{bmatrix}
+  `r eigen_a$vectors[1, 1] |> round(2)` & `r eigen_a$vectors[2, 1] |> round(2)` \\
+  `r eigen_a$vectors[1, 2] |> round(2)` & `r eigen_a$vectors[2, 2] |> round(2)` \\
+\end{bmatrix}
+\end{equation*}
+$$ 
+
+It is neat to be able to re-write a symmetric matrix
+as the product of three matrices.
+But to understand its implication,
+we need to look at it geometrical interpretation,
+which will be the topic of the next post.
+

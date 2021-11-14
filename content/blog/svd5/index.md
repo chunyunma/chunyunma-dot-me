@@ -1,5 +1,5 @@
 ---
-slug: "Svd5"
+slug: "svd5"
 title: "Singular Value Decomposition - Basis"
 date: 2021-11-11T14:49:06-05:00 
 publishdate: 2021-11-12

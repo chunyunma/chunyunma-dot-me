@@ -15,7 +15,10 @@ output:
 ```{r setup, include=FALSE}
 # Options to have images saved in the post folder
 # And to disable comment symbols before each line of output
-knitr::opts_chunk$set(echo=T, message=F, fig.path = "", comment = "")
+knitr::opts_chunk$set(
+  message=F,
+  fig.path = "",
+  comment = "")
 
 # Knitr hook to use Hugo markdown render image
 knitr::knit_hooks$set(plot = function(x,options) {

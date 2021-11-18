@@ -3,7 +3,7 @@ slug: "svd2"
 title: "Singular Value Decomposition - Eigenvalue"
 date: 2021-11-06
 publishdate: 2021-11-06
-lastmod: "2021-11-06"
+lastmod: "2021-11-18"
 tags: ["matrix"]
 draft: false
 autonumbering: true
@@ -12,10 +12,13 @@ output:
     keep_md: true
 ---
 
-In a previous [post]({{< relref "../svd/index.md" >}}),
+In the last [post]({{< relref "../svd/index.md" >}}),
 I described matrix as a transformation mapped onto one or multiple vectors.
 In this sequel, we continue building the foundation that leads to
 Singular Value Decomposition.
+
+
+
 
 
 
@@ -152,5 +155,6 @@ That is because `eigen()` returns the *normalized* eigenvector.
 A normalized vector is a unit vector whose magnitude is 1. 
 Before explaining how to calculate the magnitude of a vector, 
 we need to learn the transpose of a matrix and the dot product,
-which will be the topic of my next post.
+which will be the topic of my 
+[next post]({{< relref "../svd3/index.md" >}}).
 

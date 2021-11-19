@@ -1,5 +1,5 @@
 ---
-slug: "{{ replace .Name "-" " " | title }}"
+slug: "{{ replace .Name "-" " " | humanize }}"
 title: "post-template"
 date: {{ .Date }} 
 publishdate: {{ now.Format "2006-01-02" }}

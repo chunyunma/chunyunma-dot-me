@@ -1,5 +1,5 @@
 ---
-slug: "Svd5"
+slug: "svd5"
 title: "Singular Value Decomposition - Basis"
 date: 2021-11-11T14:49:06-05:00 
 publishdate: 2021-11-12
@@ -48,6 +48,10 @@ knitr::knit_hooks$set(
     )
   }
 )
+```
+
+```{r include=FALSE}
+source("../../../static/r/script.R")
 ```
 
 ## Basis
@@ -326,7 +330,7 @@ x_coord_b
 The output show that the coordinate of $\mathbf{x}$ in *B* is: 
 
 $$
-\mathbf{x}_B = 
+\left[\mathbf{x}\right]_B =
 \begin{bmatrix}
   4 \\
   2.8284 \\
@@ -357,17 +361,11 @@ vec_x <- c(2, 2)
 b_i <- c(1, 0)
 b_j <- c(0, 1)
 
-par(mfrow = c(1, 2))
+oldpar <- par(mfrow = c(1, 2))
 
-xlim <- c(-4, 4)
-ylim <- c(-4, 4)
-
-plot(xlim, ylim, type = "n", xlab = "x", ylab = "y",
-  main = list("Vector and coordinates in standard basis", cex = 0.8),
-  asp = 1)
-abline(v = 0, h = 0, col = "gray")
-abline(v = 2, h = 2, col = "black", lty = 2)
-grid()
+empty_canvas(
+  main = list("Vector and coordinates in standard basis", cex = 0.8)
+  )
 # draw vector x and the standard basis
 matlib::vectors(
   rbind(vec_x, b_i, b_j),
@@ -380,12 +378,9 @@ matlib::vectors(
 u1 <- b_i
 u2 <- c(-1/sqrt(2), 1/sqrt(2))
 
-plot(xlim, ylim, type = "n", xlab = "x", ylab = "y",
-  main = list("Vector and coordinates in non-standard basis", cex = 0.8),
-  asp = 1)
-abline(h = 0, coef = c(0, -1), col = "gray")
-abline(h = 2, coef = c(4, -1), col = "black", lty = 2)
-grid()
+empty_canvas(
+  main = list("Vector and coordinates in non-standard basis", cex = 0.8)
+  )
 # draw vector x and the non-standard basis
 matlib::vectors(
   rbind(vec_x, u1, u2),
@@ -406,11 +401,11 @@ shape::Arrows(
   )
 text(c(2, -2), c(-0.8, 0.8), c("4", "2.83"))
 
-par(mfrow = c(1, 1))
+par(oldpar)
 ```
 
 If you recall, having orthogonal eigenvectors
 is an attribute of symmetric matrices.
-In the next post,
+In the [next post]({{< relref "../svd6/index.md" >}}),
 we will discuss additional "merits" of symmetric matrices.
 

@@ -3,7 +3,7 @@ slug: "svd"
 title: "Singular Value Decomposition - Intro"
 date: 2021-06-18T09:35:51-04:00 
 publishdate: 2021-06-18
-lastmod: "2021-11-06"
+lastmod: "2021-11-18"
 tags: ["matrix"]
 draft: false
 autonumbering: true
@@ -118,18 +118,22 @@ vec_stretch <- as.vector(mat_stretch %*% vec)
 # prepare the drawing canvas
 # split the canvas into left and right, 1 row by 2 columns,
 # with different widths
-layout(mat = matrix(c(1, 2),
-                    nrow = 1,
-                    ncol = 2),
-       heights = 1,
-       widths = c(1, 1.5))
+oldpar <- par(pin = c(1.5, 1))
+layout(
+  mat = matrix(c(1, 2),
+    nrow = 1,
+    ncol = 2
+  ),
+  heights = 1,
+  widths = c(1, 1.5)
+)
 # define the dimensions of canvas
 xlim <- c(-0.5, 1.5)
 ylim <- c(-0.5, 1)
 # plot original and rotated vectors
 # axis labels and plot title
 plot(
-  xlim, ylim, type = "n", xlab = "x", ylab = "y", main = "Rotation transform", asp = 1
+  xlim, ylim, type = "n", xlab = "", ylab = "", main = "Rotation transform", asp = 1
 )
 # add a reference line to plot and grids
 abline(v = 0, h = 0, col = "gray")
@@ -137,29 +141,28 @@ grid()
 # add vectors to plot
 matlib::vectors(
   rbind(vec, vec_rotate),
-  col = c("blue", "green"),
+  col = c("blue", "darkgreen"),
   lwd = c(2, 2),
-  angle = 30,
-  labels = c("x", "Ax"),
-  cex.lab = c(2, 2)
+  angle = 15,
+  labels = c(expression(bold(x)), expression(paste(bold(A), bold(x))))
 )
 
 # plot original and stretched vectors
 # redefine the x-dimension of canvas
 xlim <- c(-0.5, 3)
-plot(xlim, ylim, type = "n", xlab = "x", ylab = "y", main = "Stretching transform", asp = 1)
+plot(xlim, ylim, type = "n", xlab = "", ylab = "", main = "Stretching transform", asp = 1)
 abline(v = 0, h = 0, col = "gray")
 grid()
 matlib::vectors(
   rbind(vec, vec_stretch),
-  col = c("blue", "green"),
+  col = c("blue", "darkgreen"),
   lwd = c(2, 2),
-  angle = 30,
-  labels = c("x", "Bx"),
-  cex.lab = c(2, 2)
+  angle = 15,
+  labels = c(expression(bold(x)), expression(paste(bold(B), bold(x))))
 )
+par(oldpar)
 ```
-![vectors and transformed vectors](rotate-and-strech-1.png "A vector transformed by rotation (left) and stretching (right)")
+![vectors and transformed vectors.](rotate-and-strech-1.png "A vector transformed by rotation (left) and stretching (right).")
 
 In Figure [1](#vectors-figure) the rotation matrix is calculated for $\theta = 30^{\circ}$ 
 and the stretching matrix for $k = 2$.
@@ -210,12 +213,12 @@ vec_stack <- rbind(
   )
 )
 
-x_sample1 <- vec_stack[135, ]
-x_sample2 <- vec_stack[201, ]
+x_sample1 <- vec_stack[135, ] # vector x1
+x_sample2 <- vec_stack[201, ] # vector x2
 
 # prepare the canvas
 # evenly split the canvas into left and right
-par(mfrow = c(1, 2))
+oldpar <- par(mfrow = c(1, 2))
 
 xlim <- c(-4, 4)
 ylim <- c(-4, 4)
@@ -241,8 +244,8 @@ mat_trans <- matrix(c(3, 0, 2, 2), 2)
 # Not a transparent solution, to optimize [TODO]
 vec_stack_trans <- t(apply(vec_stack, MARGIN = 1, FUN = `%*%`, t(mat_trans)))
 
-t_sample1 <- vec_stack_trans[135, ]
-t_sample2 <- vec_stack_trans[201, ]
+t_sample1 <- vec_stack_trans[135, ] # vector t1
+t_sample2 <- vec_stack_trans[201, ] # vector t2
 
 plot(xlim, ylim, type = "n", xlab = "x", ylab = "y", main = "New vectors after transformation", asp = 1)
 abline(v = 0, h = 0, col = "gray")
@@ -257,7 +260,7 @@ matlib::vectors(
 )
 
 # restore default parameter of canvas
-par(mfrow = c(1, 1))
+par(oldpar)
 ```
 ![circle and ellipse](circle-transform-1.png "A circle (left) and a ellipse after transformation (right)")
 
@@ -297,7 +300,7 @@ $$
 \end{align}
 $$ 
 
-In the next post, I will continue this series with eigenvalues and eigenvectors.
+In the [next post]({{< relref "../svd2/index.md" >}}),
+I will continue this series with eigenvalues and eigenvectors.
 
-Please stay tuned!
 

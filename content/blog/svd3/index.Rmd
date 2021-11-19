@@ -148,3 +148,6 @@ Based on this definition, the dot product is commutative:
 
 $\mathbf{u}\cdot\mathbf{v} = \mathbf{v}\cdot\mathbf{u}$
 
+In the [next post]({{< relref "../svd4/index.md" >}}),
+we will return to the topic of eigenvalues and eigenvectors.
+

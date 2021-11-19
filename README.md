@@ -9,4 +9,5 @@ Based on [Make a Hugo blog from scratch](https://zwbetz.com/make-a-hugo-blog-fro
 
 [ ] Add a footer
 [ ] Being able to toggle the numbering of single heading within a post
-
+[ ] consistent figure ref,
+need to revise the shortcode/partials to include slug in the fig ref.

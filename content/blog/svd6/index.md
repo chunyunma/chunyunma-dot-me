@@ -210,5 +210,5 @@ It is neat to be able to re-write a symmetric matrix
 as the product of three matrices.
 But to understand its implication,
 we need to look at it geometrical interpretation,
-which will be the topic of the next post.
+which will be the topic of the [next post]({{< relref "../svd7/index.md" >}}).
 

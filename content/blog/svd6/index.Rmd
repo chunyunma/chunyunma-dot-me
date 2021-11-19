@@ -50,6 +50,11 @@ knitr::knit_hooks$set(
 )
 ```
 
+```{r include=FALSE}
+source("../../../static/r/script.R")
+```
+
+
 In a previous [post]({{< relref "../svd4/index.md" >}}),
 you have seen that the eigenvectors of a symmetric matrix
 are perpendicular to each other.
@@ -63,7 +68,7 @@ It is important to note that these eigenvalues are not necessarily unique;
 some of them can be identical.
 Another important property of symmetric matrices is that
 they are orthogonally diagonalizable.
-Next, let's unpack **orthogonally diagonalizable**.
+Next, let's unpack the term **orthogonally diagonalizable**.
 
 ## Eigendecomposition
 
@@ -250,5 +255,5 @@ It is neat to be able to re-write a symmetric matrix
 as the product of three matrices.
 But to understand its implication,
 we need to look at it geometrical interpretation,
-which will be the topic of the next post.
+which will be the topic of the [next post]({{< relref "../svd7/index.md" >}}).
 

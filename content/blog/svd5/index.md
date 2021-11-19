@@ -14,6 +14,8 @@ output:
 
 
 
+
+
 ## Basis
 
 In Euclidean space $\mathbb{R}^2$, the vectors: 
@@ -296,7 +298,7 @@ v_2 2.828427
 The output show that the coordinate of $\mathbf{x}$ in *B* is: 
 
 $$
-\mathbf{x}_B = 
+\left[\mathbf{x}\right]_B =
 \begin{bmatrix}
   4 \\\\
   2.8284 \\\\
@@ -326,6 +328,6 @@ which is perpendicular to the target eigenvector.
 
 If you recall, having orthogonal eigenvectors
 is an attribute of symmetric matrices.
-In the next post,
+In the [next post]({{< relref "../svd6/index.md" >}}),
 we will discuss additional "merits" of symmetric matrices.
 

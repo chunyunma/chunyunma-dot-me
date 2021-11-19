@@ -14,6 +14,12 @@ output:
 
 
 
+
+
+
+
+
+
 In this fourth post of the [series]({{< relref "../svd/index.md" >}}),
 let's first review the two concepts
 introduced in the [last post]({{< relref "../svd3/index.md" >}}) ---
@@ -203,7 +209,7 @@ $\mathbf{A}\mathbf{x}$ is simply a linear combination of the columns of $\mathbf
 To calculate the dot product of two vectors $\mathbf{a}$ and $\mathbf{b}$ in `R`, 
 we can use `a %*% b`, as matrix multiplication.
 
-## Lenth of a Vector
+## Length of a Vector
 
 Now that we are familiar with the transpose and dot product, 
 we can define the length (also called the 2-norm) of vector $\mathbf{u}$ as: 
@@ -256,10 +262,10 @@ $$
 $$ 
 
 which is the same as the output of `eigen(mat_b)`.
-As shown before, if you multiply (or divide) an eigenvector by a constant, 
+As shown before, if we multiply (or divide) an eigenvector by a constant, 
 the new vector is still an eigenvector for the same eigenvalue.
 Therefore, by normalizing an eigenvector corresponding to an eigenvalue, 
-you still have an eigenvector for that eigenvalue.
+we'd still have an eigenvector for that eigenvalue.
 
 ## Revisit Eigenvectors
 
@@ -416,7 +422,7 @@ Their transformed vectors are:
 
 $$
 \begin{equation*}
-  \mathbf{B}\mathbf{u}_1 = {\lambda}_1\mathbf{u}_1,\\\\
+  \mathbf{B}\mathbf{u}_1 = {\lambda}_1\mathbf{u}_1,~\\\\
   \mathbf{B}\mathbf{u}_2 = {\lambda}_2\mathbf{u}_2,
 \end{equation*}
 $$ 
@@ -447,7 +453,7 @@ $$
 \begin{bmatrix}
   0.9327 \\\\
   0.3606 \\\\
-\end{bmatrix}, \\\\
+\end{bmatrix},~\\\\
 \mathbf{u}_2 = 
 \begin{bmatrix}
   -0.3606 \\\\
@@ -469,6 +475,7 @@ Now if we plot the transformed vectors, we get:
 
 Now we have stretched $\mathbf{x}$ along $\mathbf{u}_1$ and shrunk along $\mathbf{u}_2$.
 
-In the next post, we will continue discussing eigenvectors,
+In the [next post]({{< relref "../svd5/index.md" >}}),
+we will continue discussing eigenvectors,
 but in the context of a *basis* for a vector space.
 

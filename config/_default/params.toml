@@ -1,6 +1,3 @@
 dateFormat = "2006-01-02"
 homeText = "An imposter syndrome survivor's healing journal"
-footer = """Made with [Hugo](https://gohugo.io/) &bull; 
-	Themed by [zwbetz](https://github.com/zwbetz-gh/make-a-hugo-blog-from-scratch) &bull;
-	Deployed by [Netlify](https://www.netlify.com/) &bull;
-	Content in [GitHub](https://github.com/chunyunma)"""
+

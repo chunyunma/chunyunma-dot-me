@@ -16,7 +16,10 @@ output:
 # Options to have images saved in the post folder
 # And to disable comment symbols before each line of output
 knitr::opts_chunk$set(
-  message=F,
+  echo = FALSE,
+  message = FALSE,
+  results = "hold",
+  fig.show = "hold",
   fig.path = "",
   comment = "")
 

@@ -56,6 +56,10 @@ knitr::knit_hooks$set(
 )
 ```
 
+```{r include=FALSE}
+source("../../../static/r/script.R")
+```
+
 Use `hugo new --kind rmd blog/<YYYY-MM-DD-slug>` to create a new post(leaf) bundle.
 
 Throughout this template, including the YAML, 

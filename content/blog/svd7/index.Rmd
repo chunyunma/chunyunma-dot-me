@@ -77,10 +77,10 @@ $$
 \begin{equation*}
   \mathbf{u}_i = 
   \begin{bmatrix}
-    u_{i1} \\
-    u_{i2} \\
+    u\_{i1} \\
+    u\_{i2} \\
     \vdots \\
-    u_{in} \\
+    u\_{in} \\
   \end{bmatrix}
 \end{equation*}
 $$ 
@@ -91,7 +91,7 @@ $$
 \begin{equation*}
   \mathbf{u}_i^T = 
   \begin{bmatrix}
-    u_{i1} & u_{i2} & \ldots & u_{in} \\
+    u\_{i1} & u\_{i2} & \ldots & u\_{in} \\
   \end{bmatrix}
 \end{equation*}
 $$ 
@@ -102,19 +102,19 @@ $$
 \begin{equation*}
   \mathbf{u}_i\mathbf{u}_i^T = 
   \begin{bmatrix}
-    u_{i1} \\
-    u_{i2} \\
+    u\_{i1} \\
+    u\_{i2} \\
     \vdots \\
-    u_{in} \\
+    u\_{in} \\
   \end{bmatrix}
   \begin{bmatrix}
     u_{i1} & u_{i2} & \ldots & u_{in} \\
   \end{bmatrix} = 
   \begin{bmatrix}
-    u_{i1}u_{i1} & u_{i1}u_{i2} & \ldots & u_{in}u_{in} \\
-    u_{i2}u_{i1} & u_{i2}u_{i2} & \ldots & u_{i2}u_{in} \\
+    u\_{i1}u\_{i1} & u\_{i1}u\_{i2} & \ldots & u\_{in}u\_{in} \\
+    u\_{i2}u\_{i1} & u\_{i2}u\_{i2} & \ldots & u\_{i2}u\_{in} \\
     \vdots & \vdots & \vdots & \vdots \\
-    u_{in}u_{i1} & u_{in}u_{i2} & \ldots & u_{in}u_{in} \\
+    u\_{in}u_{i1} & u\_{in}u\_{i2} & \ldots & u\_{in}u\_{in} \\
   \end{bmatrix}
 \end{equation*}
 $$ 
@@ -145,17 +145,17 @@ $$
     0 & 0 & \ldots & \lambda_n \\
   \end{bmatrix}
   \begin{bmatrix}
-    u_{11} & u_{12} & \ldots & u_{1n} \\
-    u_{21} & u_{22} & \ldots & u_{2n} \\
+    u\_{11} & u\_{12} & \ldots & u\_{1n} \\
+    u\_{21} & u\_{22} & \ldots & u\_{2n} \\
     \vdots & \vdots & \vdots & \vdots \\
-    u_{n1} & u_{n2} & \ldots & u_{nn} \\
+    u\_{n1} & u\_{n2} & \ldots & u\_{nn} \\
   \end{bmatrix} \\
   &= 
   \begin{bmatrix}
-    \lambda_1u_{11} & \lambda_1u_{12} & \ldots & \lambda_1u_{1n} \\
-    \lambda_2u_{21} & \lambda_2u_{22} & \ldots & \lambda_2u_{2n} \\
+    \lambda\_1u\_{11} & \lambda\_1u\_{12} & \ldots & \lambda\_1u\_{1n} \\
+    \lambda\_2u\_{21} & \lambda\_2u\_{22} & \ldots & \lambda\_2u\_{2n} \\
     \vdots & \vdots & \vdots & \vdots \\
-    \lambda_nu_{n1} & \lambda_nu_{n2} & \ldots & \lambda_nu_{nn} \\
+    \lambda\_nu\_{n1} & \lambda\_nu\_{n2} & \ldots & \lambda\_nu\_{nn} \\
   \end{bmatrix} = 
   \begin{bmatrix}
     \lambda_1\mathbf{u}_1^\top \\

@@ -101,7 +101,7 @@ Therefore, it is not possible to write
 $$
 \begin{equation*}
 \mathbf{v}_i = a_1\mathbf{v}_1 + a_2\mathbf{v}_2 + \cdots + 
-a_{i-1}\mathbf{v}_{i-1} + a_{i+1}\mathbf{v}_{i+1} + \cdots + a_n\mathbf{v}_n
+a\_{i-1}\mathbf{v}\_{i-1} + a\_{i+1}\mathbf{v}\_{i+1} + \cdots + a_n\mathbf{v}_n
 \end{equation*}
 $$ 
 

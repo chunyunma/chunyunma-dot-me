@@ -1,16 +1,14 @@
 <!doctype html>
 <html lang="en">
-	<article class="post" {{- if .Param "autonumbering" }} autonumbering {{- end }}>
-  	{{ partial "head.html" . }}
-  	<body>
+	{{ partial "head.html" . }}
+	<body>
+		<article class="post Site" {{- if .Param "autonumbering" }} autonumbering {{- end }} />
   	  {{ partial "nav.html" . }}
-  	  <div class="container">
-  	    <main id="main">
-  	     {{ block "main" . }}{{ end }}
-  	    </main>
-  	  </div>
-  	  {{ partial "script.html" . }}
-  	</body>
+			<main id="main" class="container Site-content">
+			{{ block "main" . }}{{ end }}
+			</main>
+	</body>
+		{{ partial "footer.html" . }}
+		{{ partial "script.html" . }}
 	</article>
-	{{ partial "footer.html" . }}
 </html>

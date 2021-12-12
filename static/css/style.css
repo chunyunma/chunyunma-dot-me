@@ -1,0 +1,11 @@
+/* The next two chunks enable sticky footer */
+article.post.Site {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main.container.Site-content {
+    flex: 1;
+}
+

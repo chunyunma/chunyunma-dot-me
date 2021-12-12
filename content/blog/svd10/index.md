@@ -1,0 +1,406 @@
+---
+slug: "svd10"
+title: "Singular Value Decomposition"
+date: 2021-11-25T16:51:13-05:00 
+publishdate: 2021-11-25
+lastmod: 2021-11-25
+tags: ["matrix"]
+draft: false
+autonumbering: true
+output:
+  html_document:
+    keep_md: true
+---
+
+
+
+
+
+
+
+
+Recall that in a [previous post]({{< relref "../svd7/index.md" >}})
+on eigendecomposition,
+An $n \times n$ symmetric matrix can be decomposed into $n$ matrices
+with the same shape ($n \times n$).
+
+$$
+\begin{equation*}
+  \mathbf{A} = 
+  \lambda_1\mathbf{u}_1\mathbf{u}_1^\top + \lambda_2\mathbf{u}_2\mathbf{u}_2^\top + \ldots + \lambda_n\mathbf{u}_n\mathbf{u}_n^\top
+\end{equation*},~
+$$ 
+
+where $\mathbf{u}_1, \mathbf{u}_2, \ldots, \mathbf{u}_n$
+are eigenvectors of $\mathbf{A}$.
+
+Written compactly,
+
+$\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^\top$,
+
+where $\mathbf{P}$ consists of $\mathbf{u}_i$ as its column vectors
+and $\mathbf{D}$ a diagonal matrix with $\mathbf{A}$'s eigenvalues
+on its diagonal.
+
+More generally, any $m \times n$ matrix $\mathbf{A}$ can be docomposed
+into $r$ matrices of the same shape $m \times n$,
+where $r$ is the rank of $\mathbf{A}$.
+Why should we want to decompose a matrix?
+Similar to what decomposing a symmetric matrix does,
+we can [approximate]({{< relref "../svd8/index.md" >}})
+a matrix by the sum of its first $k$ components.
+And why do we want to approximate a matrix?
+I will answer this question in the next post.
+In this post, let's focus on how to decompose a matrix,
+symmetric or otherwise.
+
+Let $\mathbf{A}$ be an $m \times n$ matrix and $\operatorname{rank}(\mathbf{A}) = r$.
+It can be shown that the number of the non-zero singular values
+of $\mathbf{A}$ is also its rank, $r$. 
+Since all of those $r$ singular values are positive,
+we can label them in descending order as
+
+$$
+\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_n
+$$ 
+
+where 
+
+$$
+\sigma\_{r+1} = \sigma\_{r+2} = \cdots = \sigma_n = 0
+$$ 
+
+We know that each signular value $\sigma_i$ is the square root of $\lambda_i$,
+which are eigenvalues of $\mathbf{A}^\top\mathbf{A}$
+and correspond to eigenvectors $\mathbf{v}_i$ of $\mathbf{A}^\top\mathbf{A}$
+in the same order. 
+Now we can write the *singular value decomposition* of $\mathbf{A}$ as:
+
+$$
+\mathbf{A} = \mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top~
+$$ 
+
+Next, let's unpack this equation, starting with the item in the middle,
+$\mathbf{\Sigma}$.
+$\mathbf{\Sigma}$ (pronouced "sigma") is an $m \times n$ diagonal matrix,
+with $\sigma_i$ in its diagonal:
+
+$$
+\begin{equation*}
+  \mathbf{\Sigma}\_{m \times n} =
+\begin{bmatrix}
+  \sigma_1 & 0 & \ldots & 0 & 0 & \ldots & 0 \\\\
+  0 & \sigma_2 & \ldots & 0 & 0 & \ldots & 0 \\\\
+  \vdots & \vdots & \ldots & \vdots & \vdots & \vdots & \vdots \\\\
+  0 & 0 & \ldots & \sigma_r & 0 & \ldots & 0 \\\\
+  0 & 0 & \ldots & 0 & \sigma\_{r+1} & \ldots & 0 \\\\
+  \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\\\
+  0 & 0 & \ldots & 0 & 0 & \ldots & \sigma_n \\\\
+\end{bmatrix} =
+\begin{bmatrix}
+  \sigma_1 & 0 & \ldots & 0 & 0 & \ldots & 0 \\\\
+  0 & \sigma_2 & \ldots & 0 & 0 & \ldots & 0 \\\\
+  \vdots & \vdots & \ldots & \vdots & \vdots & \vdots & \vdots \\\\
+  0 & 0 & \ldots & \sigma_r & 0 & \ldots & 0 \\\\
+  0 & 0 & \ldots & 0 & 0 & \ldots & 0 \\\\
+  \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\\\
+  0 & 0 & \ldots & 0 & 0 & \ldots & 0 \\\\
+\end{bmatrix}
+\end{equation*}
+$$ 
+
+In practice, to construct $\mathbf{\Sigma}$,
+we can fill an $r \times r$ diagonal matrix
+with all the non-zero singular values of $\mathbf{A}$,
+$\sigma_1,~\sigma_2,~\sigma_r$.
+Then pad the rest with $0$s to make it an $m \times n$ matrix.
+
+Next to $\mathbf{\Sigma}$ is $\mathbf{V}$,
+an $n \times n$ matrix consisting of column vectors $\mathbf{v}_i$,
+eigenvectors of the symmetric matrix $\mathbf{A}^\top\mathbf{A}$.
+
+$$
+\mathbf{V} = 
+\begin{bmatrix}
+  \mathbf{v}_1 & \mathbf{v}_2 & \cdots & \mathbf{v}_n \\\\
+\end{bmatrix}
+$$ 
+
+$\mathbf{V}$ is an *orthogonal* matrix,
+or *orthonormal* matrix, 
+because its columns, $\mathbf{v}_i$, are orthogonal and normalized.
+In addition,
+a set of orthogonal and normalized vectors, such as the set $\left\<\mathbf{v}_i\right\>$ 
+is called an *orthonomal set*. 
+
+
+Finally, $\mathbf{U}$ is an $m \times m$ orthogonal matrix.
+To understand how $\mathbf{U}$ is constructed,
+consider the following statement:
+
+$\left\<\mathbf{A}\mathbf{v}_1,~\mathbf{A}\mathbf{v}_2,~\ldots,~ \mathbf{A}\mathbf{v}_r\right\>$ 
+is an orthogonal basis that spans $\operatorname{Col}(\mathbf{A})$.
+
+
+**Proof.** Because $\mathbf{v}_i$ and $\mathbf{v}_j$ are orthogonal
+for $i \neq j$,
+
+$$
+\begin{equation*}
+  (\mathbf{A}\mathbf{v}_i)^\top(\mathbf{A}\mathbf{v}_j) =
+  \mathbf{v}_i^\top\mathbf{A}^\top\mathbf{A}\mathbf{v}_j =
+  \mathbf{v}_i^\top(\lambda_j\mathbf{v}_j) = 0.
+\end{equation*}
+$$ 
+
+Therefore, $\mathbf{A}\mathbf{v}_1,~\mathbf{A}\mathbf{v}_2,~\ldots,~ \mathbf{A}\mathbf{v}_n$ are orthogonal to each other.
+
+In addition, $\\|\mathbf{A}\mathbf{v}_i\\| = \sigma_i$,
+where $\sigma_i$ are singular values of $\mathbf{A}$.
+Recall that $\mathbf{A}\mathbf{v}_i \neq \mathbf{0}$ when $1 \leq i \leq r$
+and $\mathbf{A}\mathbf{v}_i = \mathbf{0}$ for $i > r$.
+So $\mathbf{A}\mathbf{v}_1,~\ldots,~\mathbf{A}\mathbf{v}_r$
+are orthogonal and all non-zero, and thus a linearly independent set,
+all of which are in $\operatorname{col}(A)$.
+
+$\left\<\mathbf{A}\mathbf{v}_1,~\mathbf{A}\mathbf{v}_2,~\ldots,~ \mathbf{A}\mathbf{v}_r\right\>$ also spans $\operatorname{col}(A)$.
+To see why this is true, take any vector $\mathbf{y}$ in $\operatorname{col}(A)$,
+$\mathbf{y} = \mathbf{A}\mathbf{x}$,
+where $\mathbf{x}$ is an $n \times 1$ vector.
+Given that $\left\<\mathbf{v}_i,~\ldots,~\mathbf{v}_n\right\>$ is a basis for
+$\mathbb{R}^n$, we can write
+$$
+\mathbf{x} = c_1\mathbf{v}_1 + \cdots + c_n\mathbf{v}_n,~
+$$
+so
+
+$$
+\begin{align*}
+  \mathbf{y} = \mathbf{A}\mathbf{x} &= 
+  c_1\mathbf{A}\mathbf{v}_1 + \cdots + c_r\mathbf{A}\mathbf{v}_r + \cdots +
+  c_n\mathbf{A}\mathbf{v}_n &=
+  c_1\mathbf{A}\mathbf{v}_1 + \cdots + c_r\mathbf{A}\mathbf{v}_r.
+\end{align*}
+$$ 
+
+In other words, any vector $\mathbf{y}$ in $\operatorname{col}(A)$
+can be writen in terms of 
+$\left\<\mathbf{A}\mathbf{v}_1,~\mathbf{A}\mathbf{v}_2,~\ldots,~ \mathbf{A}\mathbf{v}_r\right\>$.
+Therefore, $\left\<\mathbf{A}\mathbf{v}_1,~\mathbf{A}\mathbf{v}_2,~\ldots,~ \mathbf{A}\mathbf{v}_r\right\>$ is an orthogonal basis for
+$\operatorname{col}(A)$.
+
+We can normalize vectors $\mathbf{A}\mathbf{v}_i$ ($i = 1,~\ldots,~r$) to obtain an orthonormal basis
+
+by dividing them by their length:
+
+$$
+\mathbf{u}_i = \frac{\mathbf{A}\mathbf{v}_i}{\\|\mathbf{A}\mathbf{v}_i\\|} =
+\frac{\mathbf{A}\mathbf{v}_i}{\sigma_i},~
+1 \leq i \leq r
+$$ 
+
+We now have an orthonormal basis 
+$\left\<\mathbf{u}_i,~\ldots,~\mathbf{u}_r \right\>$,
+where $r$ is the rank of $\mathbf{A}$.
+In the Singular Value Decomposition equation,
+$\mathbf{A} = \mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top~$,
+$\Sigma$ is an $m \times n$ matrix.
+Therefore, $\mathbf{U}$ needs to be a $m \times m$ matrix.
+In case $r < m$, we need to add additional ortthonormal vectors
+$\left\< \mathbf{u}\_{r+1}~\ldots~\mathbf{u}_m \right\>$ to the set
+so that they span $\mathbb{R}^m$.
+One method to find these $m - r$ vectors is
+*Gram-Schmidt Process*.
+We will introduce it in another post.
+
+Now we have successfully constructed all three components:
+$\Sigma$, $\mathbf{V}$, and $\mathbf{U}$.
+And we can decompose $\mathbf{A}$ as:
+
+$$
+\begin{align*}
+  \mathbf{A} &=
+\begin{bmatrix}
+  \mathbf{u}_1 & \mathbf{u}_2 & \ldots & \mathbf{u}_m \\\\
+\end{bmatrix}
+\begin{bmatrix}
+  \sigma_1 & 0 & \ldots & 0 & 0 & \ldots & 0 \\\\
+  0 & \sigma_2 & \ldots & 0 & 0 & \ldots & 0 \\\\
+  \vdots & \vdots & \ldots & \vdots & \vdots & \vdots & \vdots \\\\
+  0 & 0 & \ldots & \sigma_r & 0 & \ldots & 0 \\\\
+  0 & 0 & \ldots & 0 & 0 & \ldots & 0 \\\\
+  \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\\\
+  0 & 0 & \ldots & 0 & 0 & \ldots & 0 \\\\
+\end{bmatrix}
+\begin{bmatrix}
+  \mathbf{v}_1^\top \\\\
+  \mathbf{v}_2^\top \\\\
+  \vdots \\\\
+  \mathbf{v}_n^\top \\\\
+\end{bmatrix} \\\\
+&= \begin{bmatrix}
+  \mathbf{u}_1 & \mathbf{u}_2 & \ldots & \mathbf{u}_m \\\\
+\end{bmatrix}
+\begin{bmatrix}
+  \sigma_1\mathbf{v}_1^\top \\\\
+  \sigma_2\mathbf{v}_2^\top \\\\
+  \vdots \\\\
+  \sigma_r\mathbf{v}_r^\top \\\\
+  0 \\\\
+  \vdots \\\\
+  0 \\\\
+\end{bmatrix} \\\\
+&=
+\sigma_1\mathbf{u}_1\mathbf{v}_1^\top +
+\sigma_2\mathbf{u}_2\mathbf{v}_2^\top +
+\ldots +
+\sigma_r\mathbf{u}_r\mathbf{v}_r^\top
+\end{align*}
+$$ 
+
+Given that $\mathbf{u}_i$ is an $m$-dimensional column vector,
+and $\mathbf{v}_i$ is an $n$-dimensional column vector,
+and that $\sigma_i$ is a scalar,
+each $\sigma_i\mathbf{u}_i\mathbf{v}_i^\top$ is an $m \times n$ matrix.
+Therefore, the singular value decomposition equation
+decomposes matrix $\mathbf{A}$ into $r$ matrices
+of the same shape.
+
+Closely inspecting the equation
+$$
+\begin{equation*}
+\mathbf{A} = \sigma_1\mathbf{u}_1\mathbf{v}_1^\top +
+\sigma_2\mathbf{u}_2\mathbf{v}_2^\top +
+\ldots +
+\sigma_r\mathbf{u}_r\mathbf{v}_r^\top
+\end{equation*},~
+$$
+we can gain further insights.
+Multiply both sides of the equation with an $n \times 1$ vector
+$\mathbf{x}$ and we get:
+
+$$
+\begin{equation*}
+\mathbf{A}\mathbf{x} = \sigma_1\mathbf{u}_1\mathbf{v}_1^\top\mathbf{x} +
+\sigma_2\mathbf{u}_2\mathbf{v}_2^\top\mathbf{x} +
+\ldots +
+\sigma_r\mathbf{u}_r\mathbf{v}_r^\top\mathbf{x}
+\end{equation*},~
+$$
+
+Earlier, we have also shown that
+$\left\<\mathbf{A}\mathbf{v}_1,~\mathbf{A}\mathbf{v}_2,~\ldots,~ \mathbf{A}\mathbf{v}_r\right\>$ 
+is an orthogonal basis that spans $\operatorname{Col}(\mathbf{A})$.
+Therefore, $\mathbf{A}\mathbf{x}$ can be written as
+
+$$
+\begin{equation*}
+  \mathbf{A}\mathbf{x} = 
+  a_1\mathbf{u}_1 + a_2\mathbf{u}_2 + \ldots + a_r\mathbf{u}_r
+\end{equation*}
+$$ 
+Taken togethers,
+we will have
+$$
+a_i = \sigma_i\mathbf{v}_i^\top\mathbf{x}
+$$ 
+
+$\mathbf{v}_i^\top\mathbf{x}$ gives the *scalar* projection of $\mathbf{x}$
+onto $\mathbf{v}_i$, which is then multiplied by the $i$-th singular value
+$\sigma_i$.
+Thus, each component in the decomposition of $\mathbf{A}\mathbf{x}$
+is the result of:
+
+- Project $\mathbf{x}$ onto $\mathbf{v}_i$,
+- multiply the scalar projection with the singular value $\sigma_i$,
+- and finally scale $\mathbf{u}_i$ with the compound scalar
+  resulted from the previous step.
+
+Recall that in the eigendecomposition equation
+where $\mathbf{A}$ is a symmetric matrix,
+$$
+\begin{equation*}
+  \mathbf{A}\mathbf{x} = \lambda_1\mathbf{u}_1\mathbf{u}_1^\top\mathbf{x} +
+  \lambda_2\mathbf{u}_2\mathbf{u}_2^\top\mathbf{x} + \cdots +
+  \lambda_n\mathbf{u}_n\mathbf{u}_n^\top\mathbf{x}
+\end{equation*}
+$$ 
+$\mathbf{x}$ is projected onto each eigenvector $\mathbf{u}_i$ of $\mathbf{A}$,
+then scaled by the corresponding eigenvalue $\lambda_i$.
+
+In the singular value decomposition,
+$\mathbf{x}$ is projected onto $\mathbf{u}_i$,
+then scaled by the product of singular value $\sigma_i$ and
+scalar projection of $\mathbf{x}$ onto $\mathbf{v}_i$,
+where $\mathbf{v}_i$ are eigenvectors of $\mathbf{A}^\top\mathbf{A}$,
+and $\mathbf{u}_i$ are unit vectors
+along the direction of $\mathbf{A}\mathbf{v}_i$.
+
+The `R` package `matlib` has a function `SVD()`
+that can calculate the singular value decomposition of matrix $\mathbf{A}$.
+Let's see an example:
+
+```r 
+mat_a <- matrix(c(4, 8, 1, 3, 3, -2), nrow = 2)
+svd_a <- matlib::SVD(mat_a)
+svd_a
+```
+
+```
+$d
+[1] 9.492982 3.589331
+
+$U
+          [,1]       [,2]
+[1,] 0.4121068  0.9111355
+[2,] 0.9111355 -0.4121068
+
+$V
+            [,1]        [,2]
+[1,]  0.94148621  0.09686702
+[2,]  0.33135146 -0.09059764
+[3,] -0.06172462  0.99116540
+```
+
+Note that the last component, $\mathbf{V}$, is a $3 \times 2$ matrix,
+whereas in the original signular value decomposition equation,
+$\mathbf{V}$ is expected to be a $3 \times 3$ matrix,
+given that $\mathbf{A}$ is a $2 \times 3$ matrix.
+Did the function `matlib::SVD()` miss something?
+Consider the following:
+
+$$
+\begin{align*}
+  \begin{bmatrix}
+    4 & 1 & 3 \\\\
+    8 & 3 & -2 \\\\
+  \end{bmatrix} &=
+\mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top \\\\
+&= 
+\begin{bmatrix}
+  0.412 & 0.911 \\\\
+  0.911 & -0.412 \\\\
+\end{bmatrix}
+\begin{bmatrix}
+  9.493 & 0 & 0 \\\\
+  0 & 3.589 & 0 \\\\
+\end{bmatrix}
+\begin{bmatrix}
+  0.941 & 0.331 & -0.062 \\\\
+  0.097 & -0.091 & 0.991 \\\\
+  ? & ? & ? \\\\
+\end{bmatrix}
+\end{align*}
+$$ 
+
+I have used `?` as a place holder for elements in $\mathbf{V}^\top$
+that were missing from the previous output.
+It is easy to observe that what's replaced with `?`
+would be multiplied by `0` from the last column of $\Sigma$
+and would therefore contribute nothing to the final result.
+This is why `matlib::SVD()` parsimoniously printed only the first two columns
+of $\mathbf{V}$.
+
+In the next and final post of this series,
+we will walk through an example where singular value decoposition
+solves a real life problem.

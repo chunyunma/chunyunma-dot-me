@@ -135,10 +135,10 @@ $$
 \begin{equation*}
   \mathbf{a}_i =
     \begin{bmatrix}
-      a_{1,i} \\\\
-      a_{2,i} \\\\
-      \vdots \\\\\\
-      a_{m,i} \\\\
+      a\_{1,i} \\\\
+      a\_{2,i} \\\\
+      \vdots \\\\
+      a\_{m,i} \\\\
     \end{bmatrix}
 \end{equation*}
 $$
@@ -154,7 +154,7 @@ $$
 \begin{equation*}
   \mathbf{b}_i^\top=
     \begin{bmatrix}
-      b_{i1} & b_{i2} & \cdots & b_{in} \\\\
+      b\_{i1} & b\_{i2} & \cdots & b\_{in} \\\\
     \end{bmatrix}
 \end{equation*}
 $$ 
@@ -215,7 +215,7 @@ Now that we are familiar with the transpose and dot product,
 we can define the length (also called the 2-norm) of vector $\mathbf{u}$ as: 
 
 $$
-\|\mathbf{u}\| = 
+\\\|\mathbf{u}\\| = 
 \sqrt{\mathbf{u}\cdot\mathbf{u}} = 
 \sqrt{\mathbf{u}^\top\mathbf{u}} = 
 \sqrt{u_1^2 + u_2^2 + \cdots + u_n^2}
@@ -225,7 +225,7 @@ To normalize a vector $\mathbf{u}$, we simply divide it by its length
 to have the normalized vector $\mathbf{n}$ : 
 
 $$
-\mathbf{n} = \frac{\mathbf{u}}{\|\mathbf{u}\|}
+\mathbf{n} = \frac{\mathbf{u}}{\\|\mathbf{u}\\|}
 $$ 
 
 The normalized vector $\mathbf{n}$ is still in the same direction of $\mathbf{u}$, 
@@ -244,12 +244,12 @@ $$
 $$
 $$
 \begin{equation*}
-  \|\mathbf{u}_2\| = \sqrt{(-1)^2 + 1^2} = \sqrt{2}
+  \\|\mathbf{u}_2\\| = \sqrt{(-1)^2 + 1^2} = \sqrt{2}
 \end{equation*},
 $$
 $$
 \begin{equation*}
-  \mathbf{n} = \frac{\mathbf{u}_2}{\|\mathbf{u}_2\|} = 
+  \mathbf{n} = \frac{\mathbf{u}_2}{\\|\mathbf{u}_2\\|} = 
   \begin{bmatrix}
     \frac{-1}{\sqrt{2}} \\\\
     \frac{1}{\sqrt{2}} \\\\

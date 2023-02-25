@@ -1,5 +1,5 @@
 ---
-slug: "{{ replace .Name "-" " " | humanize }}"
+slug: "{{ replace .Name "-" " " | lower }}"
 title: "post-template"
 date: {{ .Date }} 
 publishdate: {{ now.Format "2006-01-02" }}
@@ -18,21 +18,28 @@ output:
 knitr::opts_chunk$set(
   echo = FALSE,
   message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  fig.retina = 2,
+  out.width = "100%",
+  fig.dim = c(7, 5),
   results = "hold",
   fig.show = "hold",
   fig.path = "",
   comment = "")
 
+options(tinytex.latexmk.warning = FALSE)
+
 # Knitr hook to use Hugo markdown render image
-knitr::knit_hooks$set(plot = function(x,options) {
-      base = knitr::opts_knit$get('base.url')
-      if (is.null(base)) base = ''
-      alt = ifelse (is.null(options$alt),"",options$alt)
-      cap = ifelse (is.null(options$caption),"",options$caption)
-      if (alt != ""){
+knitr::knit_hooks$set(plot = function(x, options) {
+      base <- knitr::opts_knit$get("base.url")
+      if (is.null(base)) base <- ""
+      alt <- ifelse(is.null(options$alt), "", options$alt)
+      cap <- ifelse(is.null(options$caption), "", options$caption)
+      if (alt != "") {
         sprintf('![%s](%s%s "%s")', alt, base, x, cap)
       } else {
-        sprintf('![%s](%s%s)', cap, base, x)  
+        sprintf("![%s](%s%s)", cap, base, x)
         }
   })
 
@@ -45,7 +52,7 @@ knitr::knit_hooks$set(
       if (!is.null(hlopts)) {
       paste0("{",
         glue::glue_collapse(
-          glue::glue('{names(hlopts)}={hlopts}'),
+          glue::glue("{names(hlopts)} = {hlopts}"),
           sep = ","
         ), "}"
         )
@@ -57,10 +64,10 @@ knitr::knit_hooks$set(
 ```
 
 ```{r include=FALSE}
-source("../../../static/r/script.R")
+# source("../../../static/r/script.R")
 ```
 
-```{r chunkname, class="figure", eval=FALSE, results="hide", fig.retina=2, out.width="100", alt="Label. alternative text please make it informative", caption="this is what this image shows, write it here or in the paragraph after the image as you prefer"}
+```{r chunkname, class="figure", eval=FALSE, results="hide", alt="Label. alternative text please make it informative", caption="this is what this image shows, write it here or in the paragraph after the image as you prefer"}
 plot(1:10)
 ```
 

@@ -2,9 +2,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   {{ hugo.Generator }}
-  {{ $css := "css/bootstrap.min.css" | absURL }}
+	<!-- create a variable called css, which will be a relative url -->
+  {{ $css := "css/bootstrap.min.css" | relURL }}
   <link rel="stylesheet" href="{{ $css }}">
-	<link rel="stylesheet" href="{{ "css/style.css" | absURL }}" />
+	<link rel="stylesheet" href="{{ "css/style.css" | absURL }}" /> <!-- sticky footer -->
   {{ $title := print .Title " | " .Site.Title }}
   {{ if .IsHome }}{{ $title = .Site.Title }}{{ end }}
   <title>{{ $title }}</title>

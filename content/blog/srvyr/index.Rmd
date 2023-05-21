@@ -1,0 +1,442 @@
+---
+slug: "srvyr"
+title: "Analyzing Survey Data"
+date: 2022-01-07T15:09:36-05:00 
+publishdate: 2022-01-07
+lastmod: 2023-05-21
+tags: ["function", "purrr", "srvyr"]
+draft: false
+autonumbering: true
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+# Options to have images saved in the post folder
+# And to disable comment symbols before each line of output
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  fig.retina = 2,
+  out.width = "100%",
+  fig.dim = c(7, 5),
+  results = "hold",
+  fig.show = "hold",
+  fig.path = "",
+  comment = "")
+
+options(tinytex.latexmk.warning = FALSE)
+
+# Knitr hook to use Hugo markdown render image
+knitr::knit_hooks$set(plot = function(x, options) {
+      base <- knitr::opts_knit$get("base.url")
+      if (is.null(base)) base <- ""
+      alt <- ifelse(is.null(options$alt), "", options$alt)
+      cap <- ifelse(is.null(options$caption), "", options$caption)
+      if (alt != "") {
+        sprintf('![%s](%s%s "%s")', alt, base, x, cap)
+      } else {
+        sprintf("![%s](%s%s)", cap, base, x)
+        }
+  })
+
+# knitr hook to use Hugo highlighting options
+knitr::knit_hooks$set(
+  source = function(x, options) {
+  hlopts <- options$hlopts
+    paste0(
+      "```r ",
+      if (!is.null(hlopts)) {
+      paste0("{",
+        glue::glue_collapse(
+          glue::glue("{names(hlopts)} = {hlopts}"),
+          sep = ","
+        ), "}"
+        )
+      },
+      "\n", glue::glue_collapse(x, sep = "\n"), "\n```\n"
+    )
+  }
+)
+```
+
+```{r include=FALSE}
+here::i_am("index.Rmd")
+source("../../../static/r/survey.R")
+```
+
+```{r include=FALSE}
+library(patchwork)
+```
+
+This blog is the first one of a series that documents
+what I have learned at work while analyzing data from a few national surveys lately.
+Instead of using the actual survey data,
+I have simulated them to demonstrate the core problem
+while keeping the unnecessary details minimal.
+
+## Home ownership
+
+A household well-being survey was administered every couple of years
+in two provinces, Ascington and Braeq [^1].
+One question on the survey was "Do you currently own or rent your home?"
+Figure [1](#housing-figure) shows the results from the most recent two waves of the survey.
+
+[^1]: factitious names generated using 
+[this website](https://www.fantasynamegenerators.com/country_names.php).
+
+```{r sim-data, include=FALSE}
+set.seed(4)
+
+if (!file.exists(here::here("sim_survey.rds"))) {
+  sim_survey <- fabricatr::fabricate(
+    province = fabricatr::add_level(N = 2),
+    year = fabricatr::add_level(N = 2, nest = FALSE),
+    id = fabricatr::link_levels(
+      N = 5000,
+      by = fabricatr::join_using(province, year),
+      housing = sample(c(0, 1), size = 5000, replace = TRUE, prob = c(0.4, 0.6)),
+      weight = runif(N, min = 0.5, max = 2.5) # pseudo weight, should add up to 5000
+    )
+  ) |>
+    dplyr::mutate(
+      housing = factor(housing,
+        levels = c(0, 1),
+        labels = c("renter", "owner")
+      ),
+      province = factor(province,
+        levels = c(1, 2),
+        labels = c("ascington", "braeq")
+      ),
+      year = factor(year,
+        levels = c(1, 2),
+        labels = c("2019", "2021")
+      )
+    )
+    readr::write_rds(sim_survey, here::here("sim_survey.rds"))
+} else {
+  sim_survey <- readr::read_rds(here::here("sim_survey.rds"))
+}
+
+sim_survey_srvy <- sim_survey |>
+  srvyr::as_survey(weights = weight)
+```
+
+
+```{r contigency-table}
+var_list <- c("housing")
+ownership <- cookie_cutter(sim_survey_srvy, var_list, year, province) |>
+  purrr::pluck("housing_summary")
+```
+
+
+```{r}
+# It's important to not quote additional grouping variables!!
+housing_chisq1 <- annotations(
+  sim_survey, var1 = "province", var2 = "housing", year)
+# housing_chisq2 <- annotations(sim_survey, year, housing, province)
+```
+
+```{r gg-template, include=FALSE}
+survey_name <- ggplot2::as_labeller(c(
+      "2019" = "2019 survey",
+      "2021" = "2021 survey")
+  )
+# prov_name <- ggplot2::as_labeller(c(
+#       "ascington" = "Ascington",
+#       "braeq" = "Braeq")
+#   )
+```
+
+
+
+```{r viz-housing, class="figure", alt="housing. House ownership between two provinces in 2019 (left) and in 2021 (right).", caption="Home owners."}
+
+p1 <- ownership |>
+  dplyr::filter(housing == "owner") |>
+  gg_factory(
+    x = province,
+    wrap = year,
+    annotation_df = housing_chisq1)
+p1
+```
+
+Starting from left panel, results based on the 2019 survey suggest that
+there were more home owners in Braeq than in Ascington.
+Moving on to the right panel, by 2021, the gap between the two provinces
+seemed to have disappeared, if not reversed.
+<!-- This change is mainly driven by an increased percentage of home owners -->
+This change is mainly driven by a growing number of home owners
+in Ascington over the past two years,
+and a slightly decreased percentage of home owners in Braeq
+during the same time period.
+<!-- as indicated by the bottom two panels. -->
+
+<!-- Remaining questions in this type of analysis: -->
+<!-- when I split the data by `year` or `province`, -->
+<!-- do I need to calculate new weights for each sub-sample? -->
+<!-- I suppose I could also group data on `housing` 
+and run a chisq on `year + province`. -->
+
+To understand how Figure [1](#housing-figure) is created,
+let's first peak at the data underneath the figure.
+If you want to follow along, run `chunk 1` to access the demo data.
+
+```{r include=FALSE}
+# export data and upload
+if(!file.exists(here::here("../../../static/txt/", "housing.txt"))) {
+  dput(sim_survey, here::here("../../../static/txt/", "housing.txt"))
+}
+```
+
+
+```{r echo=TRUE, eval=FALSE}
+# chunk 1 (run this to access the demo data)
+sim_survey <- dget("https://github.com/chunyunma/chunyunma-dot-me/blob/main/static/txt/housing.txt")
+```
+
+`chunk 2` reduces the original data into a contingency table
+based on which Figure [1](#housing-figure) was made.
+
+
+```{r, echo=TRUE, eval=FALSE}
+# chunk 2
+sim_survey_srvy <- sim_survey |>
+  srvyr::as_survey(weights = weight)
+
+ownership <- sim_survey_srvy |>
+  dplyr::group_by(year, province, housing) |>
+  dplyr::summarize(perc = srvyr::survey_mean(),
+    freq = dplyr::n()) |>
+  dplyr::select(-perc_se)
+
+owndership
+```
+
+```{r}
+ownership
+```
+
+<!-- Re-arranging it in a more classic view of contingency table in Table x. -->
+Now we are ready to plot.
+
+```{r housing-step1, class="figure", alt="step1. Basic ggplot and polished ggplot.", caption="Home owners."}
+step1 <- ggplot2::ggplot(
+  data = ownership,
+  ggplot2::aes(x = province, y = perc, fill = housing)) +
+  ggplot2::geom_col() +
+  ggplot2::facet_wrap(~ year)
+step1 + p1
+```
+
+
+```{r housing-step1-demo, echo=TRUE, eval=FALSE}
+step1 <- ggplot2::ggplot(
+  data = ownership,
+  ggplot2::aes(x = province, y = perc, fill = housing)) +
+  ggplot2::geom_col() +
+  ggplot2::facet_wrap(~ year)
+```
+
+The data underlying both panels in Figure [2](#step1-figure) are identical.
+However, they look different.
+Figure [3](#steps-figure) illustrates how to construct the final product from Figure 2 (left)
+step by step.
+
+```{r}
+step1 <- step1 + ggplot2::guides(fill = "none")
+```
+
+
+```{r eval=FALSE, echo=TRUE}
+step2 <- ownership |>
+  dplyr::filter(housing == "owner") |>
+  ggplot2::ggplot(
+    ggplot2::aes(x = province, y = perc)) +
+  ggplot2::geom_col() +
+  ggplot2::facet_wrap(~ year)
+
+step3 <- step2 +
+  ggplot2::scale_y_continuous(
+    labels = scales::percent_format(accuracy = 1),
+    limits = c(0, 1),
+    expand = c(0, 0)
+  )
+
+step4 <- step3 +
+  ggplot2::scale_x_discrete(
+    labels = c(
+      "ascington" = "Ascington",
+      "braeq" = "Braeq")
+  )
+
+step5 <- step4 +
+  ggplot2::labs(x = "", y = "Percentage")
+
+
+survey_name <- ggplot2::as_labeller(c(
+      "2019" = "2019 survey",
+      "2021" = "2021 survey")
+  )
+
+step6 <- step5 +
+  ggplot2::facet_wrap(~ year, labeller = survey_name)
+
+step7 <- step6 +
+  ggplot2::geom_text(
+    ggplot2::aes(label = scales::percent(perc, accuracy = 0.1)),
+    position = ggplot2::position_dodge(width = 0.9), vjust = -0.25)
+
+annotation_df <- sim_survey |>
+dplyr::group_by(year) |>
+tidyr::nest() |>
+dplyr::mutate(model = purrr::map(
+    data,
+    function(data = data) {
+      srvyr::as_survey(.data = data, weights = weight) |>
+      srvyr::svychisq(formula = ~ province + housing)
+    }),
+  tidy = purrr::map(model, broom::tidy)
+  ) |>
+tidyr::unnest(tidy)
+
+p_star <- function(p) {
+  symbol <- dplyr::case_when(
+    p <= 0.05 ~ "*",
+    TRUE ~ "NS")
+  return(symbol)
+}
+
+step8 <- step7 +
+  ggsignif::geom_signif(
+    data = annotation_df,
+    xmin = "ascington",
+    xmax = "braeq",
+    y_position = 0.9,
+    vjust = -0.2,
+    textsize = 3,
+    ggplot2::aes(annotations = p_star(p.value)),
+    manual = TRUE
+  )
+```
+
+```{r housing-viz-steps, class="figure", alt="steps. Breakdown of steps on how to construct the polished plot.", caption="Step-by-step demonstration of how to construct a plot.", fig.dim=c(7,8)}
+step2 <- ownership |>
+  dplyr::filter(housing == "owner") |>
+  ggplot2::ggplot(
+    ggplot2::aes(x = province, y = perc)) +
+  ggplot2::geom_col() +
+  ggplot2::facet_wrap(~ year)
+
+step3 <- step2 +
+  ggplot2::scale_y_continuous(
+    labels = scales::percent_format(accuracy = 1),
+    limits = c(0, 1),
+    expand = c(0, 0)
+  )
+
+step4 <- step3 +
+  ggplot2::scale_x_discrete(
+    labels = c(
+      "ascington" = "Ascington",
+      "braeq" = "Braeq")
+  )
+
+step5 <- step4 +
+  ggplot2::labs(x = "", y = "Percentage")
+
+step6 <- step5 +
+  ggplot2::facet_wrap(~ year, labeller = survey_name)
+
+step7 <- step6 +
+  ggplot2::geom_text(
+    ggplot2::aes(label = scales::percent(perc, accuracy = 0.1)),
+    position = ggplot2::position_dodge(width = 0.9), vjust = -0.25)
+
+step1 + step2 + step3 + step4 + step5 + step6 + step7 + p1 +
+  patchwork::plot_layout(ncol = 2) +
+  patchwork::plot_annotation(tag_levels = "1", tag_prefix = "Step ",
+    tag_suffix = ":") & # be careful of the different connector here
+  ggplot2::theme(plot.tag = ggplot2::element_text(size = 8))
+```
+
+To recap, 
+
+```{r eval=FALSE, echo=TRUE}
+# contingency-table
+ownership <- sim_survey_srvy |>
+  dplyr::group_by(year, province, housing) |>
+  dplyr::summarize(perc = srvyr::survey_mean(),
+    freq = dplyr::n()) |>
+  dplyr::select(-perc_se)
+
+# chisq for annotation
+annotation_df <- sim_survey |>
+dplyr::group_by(year) |>
+tidyr::nest() |>
+dplyr::mutate(model = purrr::map(
+    data,
+    function(data = data) {
+      srvyr::as_survey(.data = data, weights = weight) |>
+      srvyr::svychisq(formula = ~ province + housing)
+    }),
+  tidy = purrr::map(model, broom::tidy)
+  ) |>
+tidyr::unnest(tidy)
+
+# plot
+ownership |>
+  dplyr::filter(housing == "owner") |>
+  ggplot2::ggplot(ggplot2::aes(x = province, y = perc)) +
+    ggplot2::geom_col() +
+    ggplot2::facet_wrap(~ year, labeller = survey_name) +
+    ggplot2::scale_x_discrete(
+      labels = c(
+        "ascington" = "Ascington",
+        "braeq" = "Braeq")
+      ) +
+    ggplot2::scale_y_continuous(
+      labels = scales::percent_format(accuracy = 1),
+      limits = c(0, 1),
+      expand = c(0, 0)
+      ) +
+    ggplot2::labs(x = "", y = "Percentage") +
+    ggplot2::geom_text(
+      ggplot2::aes(label = scales::percent(perc, accuracy = 0.1)),
+      position = ggplot2::position_dodge(width = 0.9), vjust = -0.25) +
+    ggsignif::geom_signif(
+      data = annotation_df,
+      xmin = "ascington",
+      xmax = "braeq",
+      y_position = 0.9,
+      vjust = -0.2,
+      textsize = 3,
+      ggplot2::aes(annotations = p_star(p.value)),
+      manual = TRUE
+    )
+```
+
+## Scale up
+
+A typical household survey does not ask just one question.
+More likely several dozens of questions.
+Consider the following examples:
+
+- Are you currently employed?
+- Do you have any financial depedent?
+- Do you have any debt?
+
+All of these questions share the same binary structure
+as the home ownership question we have seen before.
+Presumably, we could re-use the code we have written for the `housing` variable
+and create similar figures for new variables.
+Or we could write some function!
+
+<!-- You should consider writing a function -->
+<!-- whenever you’ve copied and pasted a block of code more than twice -->
+
+
+

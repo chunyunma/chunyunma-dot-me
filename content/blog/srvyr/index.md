@@ -74,7 +74,7 @@ If you want to follow along, run `chunk 1` to access the demo data.
 
 ```r 
 # chunk 1 (run this to access the demo data)
-sim_survey <- dget("https://github.com/chunyunma/chunyunma-dot-me/blob/main/static/txt/housing.txt")
+sim_survey <- dget("https://raw.githubusercontent.com/chunyunma/chunyunma-dot-me/main/static/txt/housing.txt")
 ```
 
 `chunk 2` reduces the original data into a contingency table

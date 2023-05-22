@@ -195,7 +195,7 @@ if(!file.exists(here::here("../../../static/txt/", "housing.txt"))) {
 
 ```{r echo=TRUE, eval=FALSE}
 # chunk 1 (run this to access the demo data)
-sim_survey <- dget("https://github.com/chunyunma/chunyunma-dot-me/blob/main/static/txt/housing.txt")
+sim_survey <- dget("https://raw.githubusercontent.com/chunyunma/chunyunma-dot-me/main/static/txt/housing.txt")
 ```
 
 `chunk 2` reduces the original data into a contingency table
